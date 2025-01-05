@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
   const take = parseInt(limit as string);
 
   try {
-    const users = await prisma.user.findMany({
+    const users = await prisma.users.findMany({
       where,
       skip,
       take,
@@ -36,7 +36,7 @@ export default defineEventHandler(async (event) => {
       },
     });
 
-    const totalCount = await prisma.user.count({
+    const totalCount = await prisma.users.count({
       where,
     });
 

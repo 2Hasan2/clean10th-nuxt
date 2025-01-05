@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event);
     const { name, email } = body;
 
-    const id = parseInt(event.context.params?.id as string, 10);
+    const id = event.context.params?.id;
 
     if (!id) {
       setResponseStatus(event, 400);
@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
       };
     }
 
-    const existingUser = await prisma.user.findUnique({
+    const existingUser = await prisma.users.findUnique({
       where: { id },
     });
 
@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
     }
 
     if (email && email !== existingUser.email) {
-      const emailExists = await prisma.user.findUnique({
+      const emailExists = await prisma.users.findUnique({
         where: { email },
       });
       if (emailExists) {
@@ -51,7 +51,7 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    const updatedUser = await prisma.user.update({
+    const updatedUser = await prisma.users.update({
       where: { id },
       data: {
         name: name || existingUser.name,

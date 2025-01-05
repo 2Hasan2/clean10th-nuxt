@@ -1,19 +1,20 @@
 import prisma from "~/lib/prisma";
+import bcrypt from "bcryptjs";
 
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event);
 
-    const { name, email } = body;
+    const { name, email, password } = body;
 
-    if (!name || !email) {
+    if (!name || !email || !password) {
       setResponseStatus(event, 400);
       return {
-        error: "Name and email are required",
+        error: "Name and email and password are required",
       };
     }
 
-    const existingUser = await prisma.user.findUnique({
+    const existingUser = await prisma.users.findUnique({
       where: {
         email,
       },
@@ -26,10 +27,13 @@ export default defineEventHandler(async (event) => {
       };
     }
 
-    const newUser = await prisma.user.create({
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = await prisma.users.create({
       data: {
         name,
         email,
+        password: hashedPassword,
       },
     });
 

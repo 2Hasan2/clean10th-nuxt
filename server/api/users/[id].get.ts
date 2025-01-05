@@ -2,7 +2,7 @@ import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
   try {
-    const id = parseInt(event.context.params?.id as string, 10);
+    const id = event.context.params?.id;
 
     // Validate the user ID
     if (!id) {
@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Fetch the user from the database
-    const user = await prisma.user.findUnique({
+    const user = await prisma.users.findUnique({
       where: { id },
     });
 

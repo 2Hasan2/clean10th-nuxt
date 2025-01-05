@@ -2,7 +2,7 @@ import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
   try {
-    const id = parseInt(event.context.params?.id as string, 10);
+    const id = event.context.params?.id;
 
     // Validate the user ID
     if (!id) {
@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Find the user to delete
-    const existingUser = await prisma.user.findUnique({
+    const existingUser = await prisma.users.findUnique({
       where: { id },
     });
 
@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Delete the user
-    await prisma.user.delete({
+    await prisma.users.delete({
       where: { id },
     });
 
