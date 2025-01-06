@@ -7,6 +7,19 @@ definePageMeta({
 });
 </script>
 <template>
-    <!-- navigation to products -->
-    <nuxt-link to="/stock/products">Products</nuxt-link>
+    <div class="flex space-x-4">
+        <UButton to="/stock/products">
+            <template #leading>
+                <UIcon name="lucide:package-plus" class="w-5 h-5" />
+            </template>
+            <span>Products</span>
+        </UButton>
+        
+        <UButton to="/stock/categories">
+            <template #leading>
+                <UIcon name="lucide:package-plus" class="w-5 h-5" />
+            </template>
+            <span>Categories</span>
+        </UButton>
+    </div>
 </template>
