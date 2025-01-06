@@ -68,11 +68,10 @@ watch([page, limit, sortBy, sortOrder], fetchCategories);
 
 onMounted(fetchCategories);
 
-const deleteCategory = async (category: any) => {
-  console.log('Delete category:', category);
-  if (confirm(`Are you sure you want to delete "${category.name}"?`)) {
+const deleteCategory = async (id: string) => {
+  if (confirm("Are you sure you want to delete ?")) {
     try {
-      await $fetch(`/api/categories/${category.id}`, {
+      await $fetch(`/api/categories/${id}`, {
         method: 'DELETE',
       });
       fetchCategories();
@@ -82,12 +81,12 @@ const deleteCategory = async (category: any) => {
   }
 };
 
-const items = (row:any) => [
+const items = (row: any) => [
   [{
     label: 'Edit',
     icon: 'i-heroicons-pencil-square-20-solid',
     click: () => navigateTo(`/stock/categories/${row.id}/edit`),
-  },{
+  }, {
     label: 'Delete',
     icon: 'i-heroicons-trash-20-solid',
     click: () => deleteCategory(row),
@@ -107,34 +106,28 @@ const items = (row:any) => [
       </UButton>
     </div>
 
-    <UTable 
-      :loading="loading"
-      :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Loading...' }"
-      :progress="{ color: 'primary', animation: 'carousel' }"
-      :rows="categories" 
-      :columns="columns">
+    <UTable :loading="loading" :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Loading...' }"
+      :progress="{ color: 'primary', animation: 'carousel' }" :rows="categories" :columns="columns">
       <template #name-data="{ row }">
-      <span :class="[categories.find((category:any) => category.id === row.id) && 'text-primary-500 dark:text-primary-400']">{{ row.name }}</span>
-    </template>
-
-    <template #actions-data="{ row }">
-      <UDropdown :items="items(row)">
-        <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
-      </UDropdown>
-    </template>
-    <template #empty-state>
-      <div class="flex flex-col items-center justify-center py-6 gap-3">
-        <span class="italic text-sm">No categories found</span>
-      </div>
-    </template>
+        <ULink :to="`/stock/categories/${row.id}`" active-class="text-primary-800"
+          inactive-class="text-primary-500 dark:text-primary-400 hover:text-gray-700 dark:hover:text-gray-200">
+          {{ row.name }}
+        </ULink>
+      </template>
+      <template #actions-data="{ row }">
+        <UDropdown :items="items(row)">
+          <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
+        </UDropdown>
+      </template>
+      <template #empty-state>
+        <div class="flex flex-col items-center justify-center py-6 gap-3">
+          <span class="italic text-sm">No categories found</span>
+        </div>
+      </template>
     </UTable>
 
     <div class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
-      <UPagination 
-        v-model="page" 
-        :page-count="totalPages" 
-        :total="totalCount" 
-      />
+      <UPagination v-model="page" :page-count="totalPages" :total="totalCount" />
     </div>
   </div>
 </template>

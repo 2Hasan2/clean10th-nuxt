@@ -13,6 +13,10 @@ export default defineEventHandler(async (event) => {
 
     const category = await prisma.category.findUnique({
       where: { id },
+      include: {
+        products: true,
+        parent: true,
+      }
     });
 
     if (!category) {

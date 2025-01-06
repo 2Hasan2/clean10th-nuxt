@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Product, Category } from "@prisma/client";
+import type { Customer } from "@prisma/client";
 
 definePageMeta({
     breadcrumb: {
@@ -8,88 +8,62 @@ definePageMeta({
     },
 });
 
-const product = ref<Product & { category: Category } | null>(null);
+const customer = ref<Customer | null>(null);
 
 const route = useRoute()
-const router = useRouter()
 
-const fetchProduct = async () => {
+const fetchCustomer = async () => {
     try {
-        const res = await $fetch(`/api/products/${route.params.id}`);
+        const res = await $fetch(`/api/customers/${route.params.id}`);
         if ('error' in res) {
             console.error(res.error);
             return;
         }
-        product.value = {
+        customer.value = {
             ...res,
             createdAt: new Date(res.createdAt),
             updatedAt: new Date(res.updatedAt),
-            category: {
-                ...res.category,
-                createdAt: new Date(res.category.createdAt),
-                updatedAt: new Date(res.category.updatedAt)
-            }
         };
     } catch (error) {
         console.error(error);
     }
 };
-const deleteProduct = async (id: string) => {
-    if (confirm("Are you sure you want to delete ?")) {
-        try {
-            await $fetch(`/api/products/${id}`, {
-                method: 'DELETE',
-            });
-            router.push('/stock/products');
-        } catch (error) {
-            console.error('Error deleting product:', error);
-        }
-    }
-};
+
 onMounted(() => {
-    fetchProduct();
+    fetchCustomer();
 });
 
 </script>
 
 <template>
-    <div class="flex flex-col" v-if="product">
+    <div class="flex flex-col" v-if="customer">
         <UCard :ui="{ padding: 'p-4', background: 'bg-white dark:bg-gray-800', }">
             <div class="flex flex-col gap-4">
                 <div class="flex justify-between items-center">
                     <div class="flex flex-col space-y-2">
                         <div class="flex gap-4 items-center">
                             <h1 class="text-2xl font-bold">
-                                {{ product.name }}
+                                {{ customer.name }}
                             </h1>
                             <span class="text-sm text-gray-600">
-                                ID: {{ product.id }}
+                                ID: {{ customer.id }}
                             </span>
                         </div>
                         <div class="flex items-center space-x-2 mt-2">
                             <UIcon name="fluent-emoji-flat:tag" class="w-5 h-5 text-gray-400" />
-                            <ULink :to="`/stock/categories/${product.category.id}`" active-class="text-primary-800"
-                                inactive-class="text-primary-500 dark:text-primary-400 hover:text-gray-700 dark:hover:text-gray-200">
-                                <span class="text-gray-400">
-                                    Category:
-                                </span>
-                                <span>
-                                    {{ product.category.name }}
-                                </span>
-                            </ULink>
+                            <span class="text-gray-400">
+                                {{ customer.address }}
+                            </span>
                         </div>
                     </div>
                     <div class="flex items-center">
                         <span class="text-sm text-gray-600">
-                            {{ product.description }}
+                            {{ customer.email }}
                         </span>
                     </div>
                     <div class="flex items-center">
-                        <UButton :to="`/stock/products/${product.id}/edit`">
+                        <UButton :to="`/customers/${customer.id}/edit`">
                             Edit
-                        </UButton>
-                        <UButton @click="deleteProduct(product.id)" color="red" class="ml-2">
-                            Delete
                         </UButton>
                     </div>
                 </div>
@@ -97,13 +71,13 @@ onMounted(() => {
                     <div class="flex items-center space-x-2">
                         <UIcon name="fluent-emoji-flat:eight-oclock" class="w-5 h-5 text-gray-400" />
                         <span class="text-gray-400">
-                            Created At: {{ product.createdAt }}
+                            Created At: {{ customer.createdAt }}
                         </span>
                     </div>
                     <div class="flex items-center space-x-2">
                         <UIcon name="fluent-emoji-flat:ten-oclock" class="w-5 h-5 text-gray-400" />
                         <span class="text-gray-400">
-                            Updated At: {{ product.updatedAt }}
+                            Updated At: {{ customer.updatedAt }}
                         </span>
                     </div>
                 </div>
