@@ -15,7 +15,7 @@ const generateBreadcrumbs = () => {
       label:
         matchedRoute?.meta?.breadcrumb?.label ||
         segment.charAt(0).toUpperCase() + segment.slice(1), 
-      icon: matchedRoute?.meta?.breadcrumb?.icon || '',
+      icon: matchedRoute?.meta?.breadcrumb?.icon || 'catppuccin:folder',
       to: index !== segments.length - 1 ? pathAccumulator : undefined,
     };
   });

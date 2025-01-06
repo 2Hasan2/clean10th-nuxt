@@ -2,7 +2,7 @@
 definePageMeta({
   breadcrumb: {
     label: 'Admin',
-    icon: 'catppuccin:folder-scripts'
+    icon: 'catppuccin:folder-admin'
   },
 });
 </script>

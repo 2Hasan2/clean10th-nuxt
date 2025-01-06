@@ -30,8 +30,7 @@ const page = ref(1);
 const limit = ref(5);
 const sortBy = ref('name');
 const sortOrder = ref('asc');
-const loading = ref(false);
-const selected = ref<any>([]);
+const loading = ref(true);
 
 const categories = ref<any>([]);
 const totalCount = ref(0);
@@ -109,7 +108,6 @@ const items = (row:any) => [
     </div>
 
     <UTable 
-    v-model="selected"
       :loading="loading"
       :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Loading...' }"
       :progress="{ color: 'primary', animation: 'carousel' }"
@@ -127,7 +125,6 @@ const items = (row:any) => [
     <template #empty-state>
       <div class="flex flex-col items-center justify-center py-6 gap-3">
         <span class="italic text-sm">No categories found</span>
-        <UButton label="Create a category" to="/stock/categories/create" />
       </div>
     </template>
     </UTable>

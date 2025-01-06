@@ -2,7 +2,7 @@
 definePageMeta({
   breadcrumb: {
     label: 'Reports',
-    icon: 'catppuccin:taskfile'
+    icon: 'catppuccin:folder-scripts'
   },
 });
 </script>
