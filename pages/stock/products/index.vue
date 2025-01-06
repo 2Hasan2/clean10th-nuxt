@@ -125,7 +125,11 @@ const items = (row:any) => [
     :rows="products" 
     :columns="columns">
     <template #name-data="{ row }">
-      <span :class="[products.find((product:any) => product.id === row.id) && 'text-primary-500 dark:text-primary-400']">{{ row.name }}</span>
+      <ULink 
+      :to="`/stock/products/${row.id}`"
+      active-class="text-primary-800"
+      inactive-class="text-primary-500 dark:text-primary-400 hover:text-gray-700 dark:hover:text-gray-200"
+      >{{ row.name }}</ULink>
     </template>
 
     <template #actions-data="{ row }">

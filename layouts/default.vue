@@ -6,18 +6,34 @@ const links_vertical = [
       src: 'https://avatars.githubusercontent.com/u/739984?v=4'
     },
     badge: 100
-  }, {
+  }],[
+    {
+      label: 'POS',
+      icon: 'catppuccin:salesforce',
+      to: '/pos'
+    }
+  ],
+  [ {
     label: 'Stock',
     icon: 'catppuccin:folder-packages',
     to: '/stock'
+  }, {
+    label: 'Customers',
+    icon: 'catppuccin:folder-public',
+    to: '/customers'
   }, {
     label: 'Admin',
     icon: 'catppuccin:folder-admin',
     to: '/admin'
   }, {
-    label: 'reports',
+    label: 'Reports',
     icon: 'catppuccin:folder-scripts',
     to: '/reports'
+  }],
+  [{
+    label: 'Logout',
+    icon: 'catppuccin:folder-logout',
+    to: '/logout'
   }],
   [{
     label: 'whatsapp',

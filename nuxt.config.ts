@@ -12,10 +12,7 @@ export default defineNuxtConfig({
   modules: [
     "@nuxt/ui",
     "@vueuse/nuxt",
-    "@pinia/nuxt",
-    "@prisma/nuxt",
-  ],
-  lucide: {
-    namePrefix: 'Icon'
-  },
+    // "@pinia/nuxt",
+    // "@prisma/nuxt",
+  ]
 });
