@@ -9,5 +9,13 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  modules: ["@nuxt/ui", "@vueuse/nuxt", "@pinia/nuxt", "@prisma/nuxt"],
+  modules: [
+    "@nuxt/ui",
+    "@vueuse/nuxt",
+    "@pinia/nuxt",
+    "@prisma/nuxt",
+  ],
+  lucide: {
+    namePrefix: 'Icon'
+  },
 });
