@@ -30,7 +30,6 @@ const columns = [
 ];
 
 const name = ref('');
-const email = ref('');
 const page = ref(1);
 const limit = ref(5);
 const sortBy = ref('name');
@@ -47,7 +46,7 @@ const fetchCustomers = async () => {
     const response = await $fetch('/api/customers', {
       params: {
         name: name.value,
-        email: email.value,
+        email: name.value,
         page: page.value,
         limit: limit.value,
         sortBy: sortBy.value,
@@ -67,7 +66,7 @@ const fetchCustomers = async () => {
 
 const debouncedFetchCustomers = debounce(fetchCustomers, 300);
 
-watch([name, email], debouncedFetchCustomers);
+watch([name], debouncedFetchCustomers);
 
 watch([page, limit, sortBy, sortOrder], fetchCustomers);
 
@@ -112,7 +111,6 @@ const items = (row: any) => [
   <div>
     <div class="flex justify-between px-3 py-3.5 border-b border-gray-200 dark:border-gray-700">
       <UInput v-model="name" placeholder="Filter customers by name..." />
-      <UInput v-model="email" placeholder="Filter customers by email..." class="ml-2" />
       <UButton to="/customers/create">
         <template #leading>
           <UIcon name="lucide:user-plus" class="w-5 h-5" />
@@ -121,30 +119,18 @@ const items = (row: any) => [
       </UButton>
     </div>
 
-    <UTable
-      :loading="loading"
-      :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Loading...' }"
-      :progress="{ color: 'primary', animation: 'carousel' }"
-      :rows="customers"
-      :columns="columns"
-    >
+    <UTable :loading="loading" :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Loading...' }"
+      :progress="{ color: 'primary', animation: 'carousel' }" :rows="customers" :columns="columns">
       <template #name-data="{ row }">
-        <ULink
-          :to="`/customers/${row.id}`"
-          active-class="text-primary-800"
-          inactive-class="text-primary-500 dark:text-primary-400 hover:text-gray-700 dark:hover:text-gray-200"
-        >
+        <ULink :to="`/customers/${row.id}`" active-class="text-primary-800"
+          inactive-class="text-primary-500 dark:text-primary-400 hover:text-gray-700 dark:hover:text-gray-200">
           {{ row.name }}
         </ULink>
       </template>
 
       <template #actions-data="{ row }">
         <UDropdown :items="items(row)">
-          <UButton
-            color="gray"
-            variant="ghost"
-            icon="i-heroicons-ellipsis-horizontal-20-solid"
-          />
+          <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
         </UDropdown>
       </template>
       <template #empty-state>

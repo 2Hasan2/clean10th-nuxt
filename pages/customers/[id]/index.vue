@@ -11,6 +11,7 @@ definePageMeta({
 const customer = ref<Customer | null>(null);
 
 const route = useRoute()
+const router = useRouter()
 
 const fetchCustomer = async () => {
     try {
@@ -28,7 +29,18 @@ const fetchCustomer = async () => {
         console.error(error);
     }
 };
-
+const deleteCustomer = async (id: string) => {
+    if (confirm("Are you sure you want to delete ?")) {
+        try {
+            await $fetch(`/api/customers/${id}`, {
+                method: 'DELETE',
+            });
+            router.push('/customers');
+        } catch (error) {
+            console.error('Error deleting product:', error);
+        }
+    }
+};
 onMounted(() => {
     fetchCustomer();
 });
@@ -64,6 +76,9 @@ onMounted(() => {
                     <div class="flex items-center">
                         <UButton :to="`/customers/${customer.id}/edit`">
                             Edit
+                        </UButton>
+                        <UButton @click="deleteCustomer(customer.id)" color="red" class="ml-2">
+                            Delete
                         </UButton>
                     </div>
                 </div>
