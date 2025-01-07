@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const customer = await prisma.customer.findUnique({
-      where: { id },
+      where: { id , deletedAt: null},
     });
 
     if (!customer) {

@@ -3,7 +3,6 @@ import prisma from "~/lib/prisma";
 export default defineEventHandler(async (event) => {
   const {
     name,
-    description,
     page = 1,
     limit = 10,
     sortBy = "name",
@@ -16,11 +15,7 @@ export default defineEventHandler(async (event) => {
         contains: name as string,
       },
     }),
-    ...(description && {
-      description: {
-        contains: description as string,
-      },
-    }),
+    deletedAt: null,
   };
 
   const skip = (parseInt(page as string) - 1) * parseInt(limit as string);

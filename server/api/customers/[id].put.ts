@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
 
     // Find the customer to update
     const existingcustomer = await prisma.customer.findUnique({
-      where: { id },
+      where: { id, deletedAt: null },
     });
 
     if (!existingcustomer) {

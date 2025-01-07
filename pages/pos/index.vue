@@ -14,6 +14,11 @@ interface Product {
   price: number;
 }
 
+interface Costumer {
+  id: string;
+  name: string;
+}
+
 interface CartItem extends Product {
   quantity: number;
 }
@@ -39,6 +44,8 @@ const productPagenation = ref<ProductPagination>({
 const cart = ref<CartItem[]>([]);
 const name = ref<string>();
 const loading = ref(true);
+const costumers = ref<Costumer[]>([]);
+const selectedCostumers = ref<Costumer>()
 
 const fetchProducts = async () => {
   loading.value = true;
@@ -60,6 +67,15 @@ const fetchProducts = async () => {
   }
 };
 
+const fetchCostumers = async () => {
+  try {
+    const response = await $fetch('/api/customers/all');
+    costumers.value = response;
+  } catch (error) {
+    console.error('Error fetching costumers:', error);
+  }
+};
+
 const totalPrice = computed(() => {
   return cart.value.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2);
 });
@@ -74,9 +90,17 @@ const addProductToCart = (product: Product) => {
 };
 
 const checkout = async () => {
+  if (!selectedCostumers.value) {
+    toast.add({
+      title: 'Please select a customer',
+      timeout: 2000,
+      color: "yellow"
+    });
+    return;
+  }
   try {
     const orderData = {
-      customerId: 'someCustomerId',
+      customerId: selectedCostumers.value.id,
       items: cart.value.map(item => ({
         productId: item.id,
         quantity: item.quantity,
@@ -89,21 +113,38 @@ const checkout = async () => {
     });
 
     if (response && 'id' in response) {
-      alert(`Order created successfully! Order ID: ${response.id}`);
+      toast.add({
+        title: 'Order created successfully',
+        timeout: 2000,
+        color: "green"
+      });
       cart.value = [];
     } else if (response && 'error' in response) {
-      alert(`Failed to create order: ${response.error}`);
+      toast.add({
+        title: response.error,
+        timeout: 2000,
+        color: "red"
+      });
     } else {
-      alert('Failed to create order.');
+      toast.add({
+        title: 'There was an error processing your order',
+        timeout: 2000,
+        color: "red"
+      });
     }
   } catch (error) {
     console.error('Error creating order:', error);
-    alert('There was an error processing your order.');
+    toast.add({
+      title: 'There was an error processing your order',
+      timeout: 2000,
+      color: "red"
+    });
   }
 };
 
 onMounted(() => {
   fetchProducts();
+  fetchCostumers();
 });
 
 watch(() => productPagenation.value.currentPage, fetchProducts);
@@ -148,7 +189,13 @@ watch(name, debouncedFetchProducts);
       }
     }">
       <div class="flex flex-col gap-4 h-full justify-between">
-        <div class="flex flex-col gap-2 overflow-y-auto pb-2">
+        <UInputMenu option-attribute="name" by="id" v-model="selectedCostumers" :options="costumers"
+          placeholder="Select a customer...">
+          <template #option="{ option: costumer }">
+            <span class="truncate">{{ costumer.name }}</span>
+          </template>
+        </UInputMenu>
+        <div class="flex flex-col gap-2 h-full overflow-y-auto pb-2">
           <span class="text-lg">Cart</span>
           <div class="flex flex-col gap-4">
             <div class="flex justify-between items-center border rounded border-gray-800 p-2" v-for="item in cart"

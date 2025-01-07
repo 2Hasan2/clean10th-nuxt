@@ -22,8 +22,12 @@ export default defineEventHandler(async (event) => {
       };
     }
 
-    await prisma.customer.delete({
+    // soft delete
+    await prisma.customer.update({
       where: { id },
+      data: {
+        deletedAt: new Date(),
+      },
     });
 
     return { message: "customer deleted successfully" };
