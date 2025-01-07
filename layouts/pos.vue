@@ -1,5 +1,8 @@
+<script setup lang="ts">
+</script>
+
 <template>
-  <UContainer class="flex flex-row gap-4 h-screen">
+  <div class="flex flex-row gap-4 h-screen">
     <div class="flex flex-col gap-4 w-full min-h-screen">
       <UCard>
         <div class="flex flex-row justify-between items-center">
@@ -16,9 +19,13 @@
           </UPopover>
         </div>
       </UCard>
-      <UCard class="h-full min-w-fit overflow-y-auto">
+      <UCard :ui="{
+        body: {
+          background: 'h-full',
+        },
+      }" class="h-full min-w-fit overflow-y-auto">
         <slot />
       </UCard>
     </div>
-  </UContainer>
+  </div>
 </template>

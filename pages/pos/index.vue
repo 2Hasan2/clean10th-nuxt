@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import debounce from 'lodash/debounce';
 definePageMeta({
   breadcrumb: {
     label: 'point of sale',
@@ -25,21 +26,37 @@ interface ProductPagination {
   limit: number;
 }
 
+const toast = useToast();
+
 const productPagenation = ref<ProductPagination>({
   products: [],
   totalCount: 0,
   totalPages: 0,
   currentPage: 1,
-  limit: 5,
+  limit: 30,
 });
+
 const cart = ref<CartItem[]>([]);
+const name = ref<string>();
+const loading = ref(true);
 
 const fetchProducts = async () => {
+  loading.value = true;
   try {
-    const response = await $fetch('/api/products');
+    const response = await $fetch('/api/products', {
+      params: {
+        name: name.value,
+        page: productPagenation.value.currentPage,
+        limit: productPagenation.value.limit,
+        sortBy: 'name',
+        sortOrder: 'asc',
+      },
+    })
     productPagenation.value = response;
   } catch (error) {
     console.error('Error fetching products:', error);
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -59,14 +76,13 @@ const addProductToCart = (product: Product) => {
 const checkout = async () => {
   try {
     const orderData = {
-      customerId: 'someCustomerId', // Replace with actual customer ID, dynamically passed
+      customerId: 'someCustomerId',
       items: cart.value.map(item => ({
         productId: item.id,
         quantity: item.quantity,
       })),
     };
 
-    // Make the API call to create the order
     const response = await $fetch('/api/orders', {
       method: 'POST',
       body: orderData,
@@ -89,49 +105,81 @@ const checkout = async () => {
 onMounted(() => {
   fetchProducts();
 });
+
+watch(() => productPagenation.value.currentPage, fetchProducts);
+
+const debouncedFetchProducts = debounce(fetchProducts, 500);
+
+watch(name, debouncedFetchProducts);
 </script>
 
 <template>
-  <div class="flex flex-col max-h-screen p-4 bg-red-400">
-    <!-- Main Content -->
-    <main class="flex-grow p-6 flex flex-row gap-6">
-      <!-- Left Side: Product Selection -->
-      <div class="w-1/3 bg-gray-100 p-4 rounded-lg shadow-md">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">Products</h2>
-        <div class="space-y-4">
-          <!-- Product List -->
-          <div v-for="product in productPagenation.products" :key="product.id" class="flex justify-between items-center">
-            <span class="text-sm text-gray-700">{{ product.name }}</span>
-            <button @click="addProductToCart(product)"
-              class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
-              Add to Cart
-            </button>
+  <div class="flex w-full h-full p-4 gap-5">
+    <UCard class="w-full" :ui="{
+      body: {
+        base: 'flex flex-col gap-4 h-full justify-between',
+      }
+    }">
+      <UInput :loading="loading" v-model="name" icon="i-heroicons-magnifying-glass-20-solid" size="lg" color="white"
+        trailing placeholder="Search..." />
+      <div class="flex flex-col h-full overflow-y-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div class="min-w-32 p-2" v-for="product in productPagenation.products" :key="product.id">
+            <div class="flex flex-col gap-2 p-2 border border-gray-800 rounded">
+              <div class="flex justify-between gap-2 items-center">
+                <span class="text-lg whitespace-nowrap overflow-hidden text-ellipsis" title="{{ product.name }}">
+                  {{ product.name }}
+                </span>
+                <UBadge color="emerald" variant="subtle">${{ product.price }}</UBadge>
+              </div>
+              <UButton @click="addProductToCart(product)">
+                Add
+              </UButton>
+            </div>
           </div>
         </div>
       </div>
-
-      <!-- Right Side: Cart and Total -->
-      <div class="w-2/3 bg-white p-4 rounded-lg shadow-md">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">Cart</h2>
-        <div class="space-y-4">
-          <!-- Cart List -->
-          <div v-for="item in cart" :key="item.id" class="flex justify-between items-center">
-            <span class="text-sm text-gray-700">{{ item.name }} x{{ item.quantity }}</span>
-            <span class="text-sm text-gray-700">${{ item.price * item.quantity }}</span>
+      <UPagination v-model="productPagenation.currentPage" :page-count="productPagenation.limit"
+        :total="productPagenation.totalCount" />
+    </UCard>
+    <UCard class="w-1/3" :ui="{
+      body: {
+        base: 'h-full',
+      }
+    }">
+      <div class="flex flex-col gap-4 h-full justify-between">
+        <div class="flex flex-col gap-2 overflow-y-auto pb-2">
+          <span class="text-lg">Cart</span>
+          <div class="flex flex-col gap-4">
+            <div class="flex justify-between items-center border rounded border-gray-800 p-2" v-for="item in cart"
+              :key="item.id">
+              <span>{{ item.name }}</span>
+              <span>{{ item.quantity }} x ${{ item.price }}</span>
+              <!-- + / - for quantity -->
+              <div class="flex flex-col gap-2">
+                <div class="flex gap-2">
+                  <UButton icon="lucide:diamond-minus" size="sm" color="yellow" square variant="solid"
+                    @click="item.quantity--" :disabled="item.quantity === 1" />
+                  <UButton icon="lucide:diamond-plus" size="sm" color="blue" square variant="solid"
+                    @click="item.quantity++" />
+                </div>
+                <UButton block color="red" @click="cart.splice(cart.indexOf(item), 1)">
+                  delete
+                </UButton>
+              </div>
+            </div>
           </div>
-
-          <!-- Total Price -->
-          <div class="mt-4 flex justify-between items-center">
-            <span class="text-lg font-semibold text-gray-800">Total:</span>
-            <span class="text-lg font-semibold text-gray-800">${{ totalPrice }}</span>
+        </div>
+        <div class="flex flex-col gap-4">
+          <div class="flex justify-between">
+            <span>Total:</span>
+            <span>${{ totalPrice }}</span>
           </div>
-
-          <!-- Checkout Button -->
-          <button @click="checkout" class="w-full mt-6 bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700">
+          <UButton @click="checkout" :disabled="cart.length === 0">
             Checkout
-          </button>
+          </UButton>
         </div>
       </div>
-    </main>
+    </UCard>
   </div>
 </template>
