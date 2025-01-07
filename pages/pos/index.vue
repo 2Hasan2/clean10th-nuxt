@@ -71,6 +71,7 @@ const fetchCostumers = async () => {
   try {
     const response = await $fetch('/api/customers/all');
     costumers.value = response;
+    selectedCostumers.value = response[0];
   } catch (error) {
     console.error('Error fetching costumers:', error);
   }

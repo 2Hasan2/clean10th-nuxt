@@ -73,7 +73,6 @@ watch([page, limit, sortBy, sortOrder], fetchCustomers);
 onMounted(fetchCustomers);
 
 const deleteCustomer = async (customer: any) => {
-  console.log('Delete customer:', customer);
   if (confirm(`Are you sure you want to delete "${customer.name}"?`)) {
     try {
       await $fetch(`/api/customers/${customer.id}`, {

@@ -23,8 +23,6 @@ const state = reactive<Schema>({
 async function listUsers() {
     try {
         const response = await $fetch('/api/users')
-        console.log(response);
-
         users.splice(0, users.length, ...response.users.map((user: any) => ({
             ...user,
             createdAt: new Date(user.createdAt),
@@ -41,7 +39,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             method: 'POST',
             body: event.data
         })
-        console.log(response)
     } catch (error) {
         console.error('Submission error:', error)
     }
