@@ -15,7 +15,7 @@ import { ref, watch } from 'vue'
 const schema = object({
   name: string().required("Required").min(3, "Too short").max(255, "Too long"),
   description: string().max(255, "Too long").optional(),
-  parentId: string().required("Required"),
+  parentId: string().optional().nullable(),
 })
 
 type Schema = InferType<typeof schema>
