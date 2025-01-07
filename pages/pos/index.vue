@@ -165,8 +165,8 @@ watch(name, debouncedFetchProducts);
       <UInput :loading="loading" v-model="name" icon="i-heroicons-magnifying-glass-20-solid" size="lg" color="white"
         trailing placeholder="Search..." />
       <div class="flex flex-col h-full overflow-y-auto">
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          <div class="min-w-32 p-2" v-for="product in productPagenation.products" :key="product.id">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+          <div class="min-w-32 p-1" v-for="product in productPagenation.products" :key="product.id">
             <div class="flex flex-col gap-2 p-2 border border-gray-800 rounded">
               <div class="flex justify-between gap-2 items-center">
                 <span class="text-lg whitespace-nowrap overflow-hidden text-ellipsis" title="{{ product.name }}">

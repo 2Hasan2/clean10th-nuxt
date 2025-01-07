@@ -40,6 +40,7 @@ export default defineEventHandler(async (event) => {
             lte: endDate
           },
         }),
+        deletedAt: null,
     };
 
     const skip = (parseInt(page as string) - 1) * parseInt(limit as string);

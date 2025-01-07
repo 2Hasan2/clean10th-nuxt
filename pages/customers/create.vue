@@ -31,7 +31,6 @@ const state = reactive({
 const toast = useToast();
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  console.log(event.data);
   try {
     const response = await $fetch('/api/customers', {
       method: 'POST',

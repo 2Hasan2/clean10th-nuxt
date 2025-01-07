@@ -12,7 +12,10 @@ export default defineEventHandler(async (event) => {
     }
 
     const order = await prisma.order.findUnique({
-      where: { id },
+      where: {
+        id,
+        deletedAt: null
+       },
       include: {
         customer: true,
         orderItem: {

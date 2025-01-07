@@ -26,15 +26,15 @@ const links_vertical = [
     icon: 'catppuccin:folder-admin',
     to: '/admin'
   }, {
-    label: 'Reports',
+    label: 'Orders',
     icon: 'catppuccin:folder-scripts',
-    to: '/reports'
+    to: '/orders'
   }],
-  [{
-    label: 'Logout',
-    icon: 'catppuccin:folder-logout',
-    to: '/logout'
-  }],
+  // [{
+  //   label: 'Logout',
+  //   icon: 'catppuccin:folder-logout',
+  //   to: '/logout'
+  // }],
   [{
     label: 'whatsapp',
     icon: 'fa:whatsapp',
@@ -64,7 +64,11 @@ const links_vertical = [
           </UPopover>
         </div>
       </UCard>
-      <UCard class="h-full min-w-fit overflow-y-auto">
+      <UCard :ui="{
+        body: {
+          background: 'h-full',
+        },
+      }" class="h-full min-w-fit overflow-y-auto">
         <slot />
       </UCard>
     </div>
