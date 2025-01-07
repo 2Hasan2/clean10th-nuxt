@@ -3,6 +3,12 @@ import { object, string, type InferType } from 'yup'
 import type { FormSubmitEvent } from '#ui/types'
 import type { Users } from "@prisma/client"
 import { reactive, onMounted } from 'vue'
+definePageMeta({
+    breadcrumb: {
+        label: 'users',
+        icon: 'catppuccin:folder'
+    },
+});
 
 const users = reactive<Users[]>([])
 
