@@ -29,28 +29,41 @@ export default defineEventHandler(async (event) => {
     // Collect all product IDs from items
     const productIds = items.map(item => item.productId);
 
-    // Fetch all products at once
-    const products = await prisma.product.findMany({
-      where: {
-        id: { in: productIds },
-      },
-    });
+    // Fetch all products and stock information at once
+    const [products, stocks] = await prisma.$transaction([
+      prisma.product.findMany({
+        where: { id: { in: productIds } },
+      }),
+      prisma.stock.findMany({
+        where: { productId: { in: productIds } },
+      }),
+    ]);
 
-    // Create a map of products for quick lookup
+    // Create a map of products and stock for quick lookup
     const productMap = new Map(products.map(product => [product.id, product]));
+    const stockMap = new Map(stocks.map(stock => [stock.productId, stock]));
 
     let total = 0;
     const orderItems = [];
 
-    // Process items
+    // Process items and check stock availability
     for (const item of items) {
       const { productId, quantity } = item;
       const product = productMap.get(productId);
+      const stock = stockMap.get(productId);
 
       if (!product) {
         setResponseStatus(event, 404);
         return {
           error: `Product with ID ${productId} not found`,
+        };
+      }
+
+      // Check if there's enough stock for the product
+      if (!stock || stock.quantity < quantity) {
+        setResponseStatus(event, 400);
+        return {
+          error: `Not enough stock for ${product.name}, ${stock && stock.quantity > 0 ? `only ${stock.quantity} available` : "out of stock"}`,
         };
       }
 
@@ -62,6 +75,9 @@ export default defineEventHandler(async (event) => {
         quantity,
         price: itemPrice,
       });
+
+      // Reduce stock quantity (bulk update later in transaction)
+      stock.quantity -= quantity;
     }
 
     // Create the order with all items in a single operation
@@ -77,6 +93,16 @@ export default defineEventHandler(async (event) => {
         orderItem: true,
       },
     });
+
+    // Update stock quantities in bulk (reduce stock in one call)
+    const stockUpdates = stocks.map(stock => ({
+      where: { productId: stock.productId },
+      data: { quantity: stock.quantity },
+    }));
+
+    await prisma.$transaction(
+      stockUpdates.map(update => prisma.stock.update(update))
+    );
 
     return newOrder;
   } catch (error) {

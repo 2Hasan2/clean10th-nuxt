@@ -112,31 +112,15 @@ const checkout = async () => {
       method: 'POST',
       body: orderData,
     });
-
-    if (response && 'id' in response) {
-      toast.add({
-        title: 'Order created successfully',
-        timeout: 2000,
-        color: "green"
-      });
-      cart.value = [];
-    } else if (response && 'error' in response) {
-      toast.add({
-        title: response.error,
-        timeout: 2000,
-        color: "red"
-      });
-    } else {
-      toast.add({
-        title: 'There was an error processing your order',
-        timeout: 2000,
-        color: "red"
-      });
-    }
-  } catch (error) {
-    console.error('Error creating order:', error);
     toast.add({
-      title: 'There was an error processing your order',
+      title: 'Order created successfully',
+      timeout: 2000,
+      color: "green"
+    });
+    cart.value = [];
+  } catch (error) {
+    toast.add({
+      title: (error as any)?.data?.error || 'There was an error processing your order',
       timeout: 2000,
       color: "red"
     });

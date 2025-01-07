@@ -12,17 +12,17 @@ definePageMeta({
 
         <UCard class="min-w-1/4 max-w-full">
             <template #header>
-                <h2 class="text-lg font-semibold">Stocks</h2>
+                <h2 class="text-lg font-semibold">Warehouse</h2>
             </template>
             <div class="flex space-x-4">
-                <UButton to="/stock/products">
+                <UButton to="/warehouse/products">
                     <template #leading>
                         <UIcon name="lucide:package-plus" class="w-5 h-5" />
                     </template>
                     <span>Products</span>
                 </UButton>
 
-                <UButton to="/stock/categories">
+                <UButton to="/warehouse/categories">
                     <template #leading>
                         <UIcon name="lucide:package-plus" class="w-5 h-5" />
                     </template>

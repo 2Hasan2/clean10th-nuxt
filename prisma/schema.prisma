@@ -38,6 +38,23 @@ model Product {
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   orderItem orderItem[]
+
+  stock Stock?
+}
+
+model Stock {
+  id String @id @default(uuid())
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  quantity Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([productId])
+  @@index([productId])
 }
 
 enum Role {
@@ -85,8 +102,8 @@ model Order {
 
   total Float
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   orderItem orderItem[]

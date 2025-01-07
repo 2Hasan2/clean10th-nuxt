@@ -42,7 +42,7 @@ const selectedCategory = ref<{
 })
 
 const handleSearch = debounce(async (query: string) => {
-    if (query.length >= 2) {
+    if (query.length >= 1) {
         const { data } = await useAsyncData('categories', async () => {
             const response = await $fetch("/api/categories/", {
                 params: {
@@ -75,20 +75,20 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             title: 'Product has been created successfully',
             timeout: 1000,
         })
+        state.name = ''
+        state.description = ''
+        state.price = 0
+        selectedCategory.value = {
+            label: '',
+            value: ''
+        }
     } catch (error) {
         const errorResponse = error as { data: { error: string } }
         toast.add({
             title: 'Error creating product',
             description: errorResponse.data.error || 'An error occurred',
+            color: 'red'
         })
-    }
-    // clear form
-    state.name = ''
-    state.description = ''
-    state.price = 0
-    selectedCategory.value = {
-        label: '',
-        value: ''
     }
 }
 </script>

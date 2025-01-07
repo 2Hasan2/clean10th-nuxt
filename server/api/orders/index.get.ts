@@ -63,13 +63,21 @@ export default defineEventHandler(async (event) => {
       },
     });
 
-    const totalCount = await prisma.order.count({
+    const aggregation = await prisma.order.aggregate({
       where,
+      _sum: {
+        total: true,
+      },
+      _count: true,
     });
+
+    const totalCount = aggregation._count;
+    const totalPrice = aggregation._sum.total || 0;
 
     return {
       orders,
       totalCount,
+      totalPrice,
       limit: take,
       totalPages: Math.ceil(totalCount / take),
       currentPage: parseInt(page as string),

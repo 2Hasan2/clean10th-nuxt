@@ -8,6 +8,7 @@ definePageMeta({
         label: 'users',
         icon: 'catppuccin:folder'
     },
+    layout: 'test',
 });
 
 const users = reactive<Users[]>([])

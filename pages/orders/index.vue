@@ -42,7 +42,6 @@ const limit = ref(20);
 const sortBy = ref("createdAt");
 const sortOrder = ref("desc");
 const loading = ref(true);
-
 const orders = ref<(Order & {
   orderItem: (orderItem & {
     product: Product
@@ -50,6 +49,7 @@ const orders = ref<(Order & {
   customer: Customer
 })[]>([]);
 const totalCount = ref(0);
+const totalPrice = ref(0);
 const totalPages = ref(0);
 
 const fetchOrders = async () => {
@@ -66,7 +66,6 @@ const fetchOrders = async () => {
         endDate: rangeDate.value.end.toISOString(),
       },
     });
-    console.log(response.orders[0].orderItem);
 
     orders.value = response.orders.map((order: any) => ({
       ...order,
@@ -90,6 +89,7 @@ const fetchOrders = async () => {
       deletedAt: order.deletedAt ? new Date(order.deletedAt) : null,
     }));
     totalCount.value = response.totalCount;
+    totalPrice.value = response.totalPrice;
     totalPages.value = response.totalPages;
   } catch (error) {
     console.error("Error fetching orders:", error);
@@ -207,12 +207,11 @@ function selectRange(duration: Duration & { start?: Date }) {
       </div>
       <div class="flex text-2xl gap-2">
         <span>count:</span>
-        <UBadge color="green" size="md" variant="subtle">{{ orders.length }}</UBadge>
+        <UBadge color="green" size="md" variant="subtle">{{ totalCount }}</UBadge>
       </div>
       <div class="flex text-2xl gap-2">
         <span>total:</span>
-        <UBadge color="green" size="md" variant="subtle">${{ orders.reduce((sum, order) => sum + order.total, 0) }}
-        </UBadge>
+        <UBadge color="green" size="md" variant="subtle">${{ totalPrice }}</UBadge>
       </div>
     </div>
 

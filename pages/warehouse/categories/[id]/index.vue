@@ -57,7 +57,7 @@ const deleteCategory = async (id: string) => {
             await $fetch(`/api/categories/${id}`, {
                 method: 'DELETE',
             });
-            router.push('/stock/categories');
+            router.push('/warehouse/categories');
         } catch (error) {
             console.error('Error deleting category:', error);
         }
@@ -89,7 +89,7 @@ onMounted(() => {
                                 <UIcon name="fluent-emoji-flat:tag" class="w-5 h-5 text-gray-400" />
                                 <span class="text-gray-400">
                                     Parent: {{ category.parent.name }}
-                                    <ULink :to="`/stock/categories/${category.parent.id}`"
+                                    <ULink :to="`/warehouseouse/categories/${category.parent.id}`"
                                         active-class="text-primary-800"
                                         inactive-class="text-primary-500 dark:text-primary-400 hover:text-gray-700 dark:hover:text-gray-200">
                                         ({{ category.parent.id }})
@@ -103,7 +103,7 @@ onMounted(() => {
                             </span>
                         </div>
                         <div class="flex items-center">
-                            <UButton :to="`/stock/categories/${category.id}/edit`">
+                            <UButton :to="`/warehouseouse/categories/${category.id}/edit`">
                                 Edit
                             </UButton>
                             <UButton @click="deleteCategory(category.id)" color="red" class="ml-2">
@@ -178,7 +178,7 @@ onMounted(() => {
                                         <span
                                             class="text-sm text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis w-48">
                                             ID:
-                                            <ULink :to="`/stock/products/${product.id}`" active-class="text-primary-800"
+                                            <ULink :to="`/warehouseouse/products/${product.id}`" active-class="text-primary-800"
                                                 inactive-class="text-primary-500 text-sm dark:text-primary-400 hover:text-gray-700 dark:hover:text-gray-200">
                                                 {{ product.id }}
                                             </ULink>

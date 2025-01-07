@@ -14,9 +14,9 @@ const links_vertical = [
     }
   ],
   [ {
-    label: 'Stock',
+    label: 'Warehouse',
     icon: 'catppuccin:folder-packages',
-    to: '/stock'
+    to: '/warehouse'
   }, {
     label: 'Customers',
     icon: 'catppuccin:folder-public',

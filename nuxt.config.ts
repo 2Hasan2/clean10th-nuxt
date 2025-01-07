@@ -9,7 +9,7 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  modules: ["@nuxt/ui", // "@pinia/nuxt",
+  modules: ["@nuxt/ui",
   // "@prisma/nuxt",
   "@vueuse/nuxt", "nuxt-echarts"]
 });
