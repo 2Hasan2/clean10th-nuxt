@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import debounce from 'lodash/debounce';
+
 definePageMeta({
   breadcrumb: {
     label: 'point of sale',
@@ -13,8 +14,12 @@ interface Product {
   name: string;
   price: number;
   stock: {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
     quantity: number;
-  }
+    productId: string;
+  } | null;
 }
 
 interface Costumer {
@@ -87,7 +92,7 @@ const totalPrice = computed(() => {
 const addProductToCart = (product: Product) => {
   const existingItem = cart.value.find(item => item.id === product.id);
   if (existingItem) {
-    if (existingItem.quantity < product.stock.quantity) {
+    if (product.stock && existingItem.quantity < product.stock.quantity) {
       existingItem.quantity++;
     }
   } else {
@@ -155,10 +160,11 @@ watch(name, debouncedFetchProducts);
         trailing placeholder="Search..." />
       <div class="flex flex-col h-full overflow-y-auto">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
-          <!-- if product.stock.quantity === cart.find(item => item.id === product.id)?.quantity, opacity-50 -->
           <div class="min-w-32 p-1" v-for="product in productPagenation.products" :key="product.id"
-            :class="{ 'opacity-50': product.stock.quantity === cart.find(item => item.id === product.id)?.quantity }">
-            <div class="flex flex-col gap-2 p-2 border border-gray-800 rounded">
+            :class="{ 'opacity-50': product.stock && product.stock.quantity <= (cart.find(item => item.id === product.id)?.quantity ?? 0) }">
+            <UTooltip class="flex flex-col gap-2 p-2 border border-gray-800 rounded"
+              :text="`${product.name} ${product.stock?.quantity}`"
+              :ui="{ base: 'flex items-center p-2 text-md h-full' }" :popper="{ placement: 'right', arrow: true }">
               <div class="flex justify-between gap-2 items-center">
                 <span class="text-lg whitespace-nowrap overflow-hidden text-ellipsis" title="{{ product.name }}">
                   {{ product.name }}
@@ -166,10 +172,10 @@ watch(name, debouncedFetchProducts);
                 <UBadge color="emerald" variant="subtle">${{ product.price }}</UBadge>
               </div>
               <UButton @click="addProductToCart(product)"
-                :disabled="product.stock.quantity === cart.find(item => item.id === product.id)?.quantity">
+                :disabled="!!product.stock && product.stock.quantity <= (cart.find(item => item.id === product.id)?.quantity ?? 0)">
                 Add
               </UButton>
-            </div>
+            </UTooltip>
           </div>
         </div>
       </div>
@@ -191,10 +197,16 @@ watch(name, debouncedFetchProducts);
         <div class="flex flex-col gap-2 h-full overflow-y-auto pb-2">
           <span class="text-lg">Cart</span>
           <div class="flex flex-col gap-4">
-            <div class="flex justify-between items-center border rounded border-gray-800 p-2" v-for="item in cart"
+            <div class="flex justify-between gap-2 items-center border rounded border-gray-800 p-2" v-for="item in cart"
               :key="item.id">
               <span>{{ item.name }}</span>
-              <span>{{ item.quantity }} x ${{ item.price }}</span>
+
+              <span class="flex gap-2">
+                <UInput v-model="item.quantity" :ui="{ base: 'w-16' }" type="number" min="1" /> x
+                <span>
+                  ${{ item.price }}
+                </span>
+              </span>
               <!-- + / - for quantity -->
               <div class="flex flex-col gap-2">
                 <div class="flex gap-2">

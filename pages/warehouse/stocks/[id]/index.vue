@@ -12,7 +12,7 @@ import type { FormSubmitEvent } from '#ui/types'
 const route = useRoute()
 
 const schema = object({
-    quantity: number().required("Required").min(0, "Too low").default(0).integer("Must be an integer").positive("Must be positive").max(999_999_999, "Too high"),
+    quantity: number().required("Required").min(0, "Too low").default(0).max(999_999_999, "Too high"),
 })
 
 type Schema = InferType<typeof schema>
@@ -69,7 +69,7 @@ onMounted(() => {
 <template>
   <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
     <UFormGroup label="Quantity" name="quantity">
-        <UInput size="lg" :loading="loading" v-model="state.quantity" type="number" />
+        <UInput size="lg" :loading="loading" min="0" v-model="state.quantity" type="number" />
     </UFormGroup>
     <UButtonGroup>
         <UButton type="submit">

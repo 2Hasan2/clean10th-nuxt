@@ -1,3 +1,4 @@
+import { isNumber } from "lodash";
 import prisma from "~/lib/prisma";
 
 export default defineEventHandler(async (event) => {
@@ -15,17 +16,10 @@ export default defineEventHandler(async (event) => {
       };
     }
 
-    if (!quantity) {
-      setResponseStatus(event, 400);
-      return {
-        error: "quantity is required",
-      };
-    }
-
     if (quantity < 0) {
         setResponseStatus(event, 400);
         return {
-            error: "quantity must be positive",
+            error: "Quantity must be integer"
         };
     }
 

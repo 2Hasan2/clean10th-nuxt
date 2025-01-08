@@ -13,6 +13,20 @@ export default defineEventHandler(async (event) => {
       };
     }
 
+    // make sure the category name is unique
+    const existingCategory = await prisma.category.findFirst({
+      where: {
+        name,
+      },
+    });
+
+    if (existingCategory) {
+      setResponseStatus(event, 400);
+      return {
+        error: "Category name already exists",
+      };
+    }
+
     // Check if a parent category exists (if provided)
     let parentCategory;
     if (parentId) {
@@ -21,6 +35,7 @@ export default defineEventHandler(async (event) => {
           id: parentId,
         },
       });
+      
 
       if (!parentCategory) {
         setResponseStatus(event, 400);

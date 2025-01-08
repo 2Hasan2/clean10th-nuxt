@@ -14,7 +14,7 @@ definePageMeta({
             <template #header>
                 <h2 class="text-lg font-semibold">Warehouse</h2>
             </template>
-            <div class="flex space-x-4">
+            <UButtonGroup>
                 <UButton to="/warehouse/products">
                     <template #leading>
                         <UIcon name="lucide:package-plus" class="w-5 h-5" />
@@ -28,7 +28,14 @@ definePageMeta({
                     </template>
                     <span>Categories</span>
                 </UButton>
-            </div>
+
+                <UButton to="/warehouse/stocks">
+                    <template #leading>
+                        <UIcon name="lucide:package-plus" class="w-5 h-5" />
+                    </template>
+                    <span>stocks</span>
+                </UButton>
+            </UButtonGroup>
         </UCard>
 
         <UCard class="min-w-1/4 max-w-full">

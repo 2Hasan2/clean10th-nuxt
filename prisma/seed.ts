@@ -3,120 +3,115 @@ import { faker } from '@faker-js/faker';
 
 const prisma = new PrismaClient();
 
-async function main() {
-  // Seed Categories
-  const categories = [];
-  for (let i = 0; i < 7; i++) {
-    const category = await prisma.category.create({
-      data: {
-        name: faker.commerce.department(),
-        description: faker.commerce.productDescription(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    });
-    categories.push(category);
-  }
+async function seed() {
+  const categoryNames = new Set<string>();
+  const categories = await Promise.all(
+    Array.from({ length: 7 }).map(() => {
+      let name = faker.commerce.department();
+      
+      while (categoryNames.has(name)) {
+        name = faker.commerce.department();
+      }
+      
+      categoryNames.add(name);
 
-  console.log('Seeded 7 categories');
-
-  // Seed Products
-  const products = [];
-  for (let i = 0; i < 40; i++) {
-    const product = await prisma.product.create({
-      data: {
-        name: faker.commerce.productName(),
-        description: faker.commerce.productDescription(),
-        price: parseFloat(faker.commerce.price()),
-        image: faker.image.url(),
-        category: {
-          connect: { id: faker.helpers.arrayElement(categories).id },
-        },
-        stock: {
-          create: {
-            quantity: faker.number.int({ min: 1, max: 100 }),
-          },
-        },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    });
-    products.push(product);
-  }
-
-  console.log('Seeded 40 products');
-
-  // Seed Customers
-  const customers = [];
-  for (let i = 0; i < 10; i++) {
-    const customer = await prisma.customer.create({
-      data: {
-        name: faker.person.fullName(),
-        email: faker.internet.email(),
-        phone: faker.phone.number(),
-        address: faker.location.streetAddress(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    });
-    customers.push(customer);
-  }
-
-  console.log('Seeded 10 customers');
-
-  // Seed Orders and Order Items
-  for (let i = 0; i < 10; i++) {
-    const order = await prisma.order.create({
-      data: {
-        customer: {
-          connect: { id: faker.helpers.arrayElement(customers).id },
-        },
-        total: 0, // Will calculate total below
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    });
-
-    let total = 0;
-
-    for (let j = 0; j < faker.number.int({ min: 1, max: 5 }); j++) {
-      const product = faker.helpers.arrayElement(products);
-
-      const quantity = faker.number.int({ min: 1, max: 10 });
-      const price = product.price * quantity;
-
-      total += price;
-
-      await prisma.orderItem.create({
+      return prisma.category.create({
         data: {
-          order: {
-            connect: { id: order.id },
-          },
-          product: {
-            connect: { id: product.id },
-          },
-          quantity: quantity,
-          price: product.price,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          name,
+          description: faker.commerce.productDescription(),
         },
       });
-    }
+    })
+  );
 
-    // Update the order's total
-    await prisma.order.update({
-      where: { id: order.id },
-      data: { total },
-    });
+  const productNames = new Set<string>();
+  const products = await Promise.all(
+    Array.from({ length: 50 }).map(() => {
+      let name = faker.commerce.productName();
+      
+      while (productNames.has(name)) {
+        name = faker.commerce.productName();
+      }
+      
+      productNames.add(name);
+
+      return prisma.product.create({
+        data: {
+          name,
+          description: faker.commerce.productDescription(),
+          price: parseFloat(faker.commerce.price()),
+          image: faker.image.url(),
+          categoryId: categories[Math.floor(Math.random() * categories.length)].id,
+          stock:{
+            create: {
+              quantity: faker.number.int({ min: 0, max: 999_999 }),
+            },
+          }
+        },
+      });
+    })
+  );
+
+  // Create customers
+  const customerNames = new Set<string>();
+  const customers = await Promise.all(
+    Array.from({ length: 20 }).map(() => {
+      let name = faker.person.fullName();
+      
+      // Ensure the name is unique
+      while (customerNames.has(name)) {
+        name = faker.person.fullName();
+      }
+      
+      customerNames.add(name);
+
+      return prisma.customer.create({
+        data: {
+          name,
+          email: faker.internet.email(),
+          phone: faker.phone.number(),
+          address: faker.location.streetAddress(),
+        },
+      });
+    })
+  );
+
+  // Create orders
+  const orders = await Promise.all(
+    Array.from({ length: 100 }).map(() =>
+      prisma.order.create({
+        data: {
+          customerId: customers[Math.floor(Math.random() * customers.length)].id,
+          total: parseFloat(faker.commerce.price()),
+        },
+      })
+    )
+  );
+
+  // Create order items (each order will have 1 to 9 items)
+  for (const order of orders) {
+    const numberOfItems = Math.floor(Math.random() * 9) + 1;
+    const orderItems = await Promise.all(
+      Array.from({ length: numberOfItems }).map(() =>
+        prisma.orderItem.create({
+          data: {
+            orderId: order.id,
+            productId: products[Math.floor(Math.random() * products.length)].id,
+            quantity: Math.floor(Math.random() * 5) + 1, // Random quantity from 1 to 5
+            price: parseFloat(faker.commerce.price()),
+          },
+        })
+      )
+    );
   }
 
-  console.log('Seeded 10 orders with order items');
+  console.log('Seeding completed.');
 }
 
-main()
-  .catch((e) => {
+// Run seeding function
+seed()
+  .catch(e => {
     console.error(e);
-    process.exit(1);
   })
   .finally(async () => {
     await prisma.$disconnect();
