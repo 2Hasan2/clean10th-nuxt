@@ -2,7 +2,7 @@
 import debounce from 'lodash/debounce';
 definePageMeta({
   breadcrumb: {
-    label: 'Users',
+    label: 'create',
     icon: 'catppuccin:folder-admin'
   },
   requiresAuth: true,

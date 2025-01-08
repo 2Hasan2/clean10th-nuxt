@@ -51,25 +51,16 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 </script>
 
 <template>
-    <div class="w-60">
-        <UCard>
-            <UCardHeader>
-                <h2 class="text-xl font-semibold">Create User</h2>
-            </UCardHeader>
-            <UCardBody>
-                <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-                    <UFormGroup label="Email" name="email">
-                        <UInput v-model="state.email"  :disabled="loading"/>
-                    </UFormGroup>
-                    <UFormGroup label="Password" name="password">
-                        <UInput v-model="state.password" type="password" :disabled="loading" />
-                    </UFormGroup>
-                    <UFormGroup label="Name" name="name">
-                        <UInput v-model="state.name" :disabled="loading" />
-                    </UFormGroup>
-                    <UButton type="submit" :loading="loading"  :disabled="loading">Create User</UButton>
-                </UForm>
-            </UCardBody>
-        </UCard>
-    </div>
+    <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
+        <UFormGroup label="Email" name="email">
+            <UInput v-model="state.email" placeholder="Enter user's email" :disabled="loading" />
+        </UFormGroup>
+        <UFormGroup label="Password" name="password">
+            <UInput v-model="state.password" type="password" placeholder="Enter user's password" :disabled="loading" />
+        </UFormGroup>
+        <UFormGroup label="Name" name="name">
+            <UInput v-model="state.name" placeholder="Enter user's name" :disabled="loading" />
+        </UFormGroup>
+        <UButton type="submit" :loading="loading" :disabled="loading">Create User</UButton>
+    </UForm>
 </template>
