@@ -54,6 +54,7 @@ const productPagenation = ref<ProductPagination>({
 const cart = ref<CartItem[]>([]);
 const name = ref<string>();
 const loading = ref(true);
+const checkoutLoading = ref(false);
 const costumers = ref<Costumer[]>([]);
 const selectedCostumers = ref<Costumer>()
 
@@ -103,6 +104,7 @@ const addProductToCart = (product: Product) => {
 };
 
 const checkout = async () => {
+  checkoutLoading.value = true;
   if (!selectedCostumers.value) {
     toast.add({
       title: 'Please select a customer',
@@ -142,6 +144,8 @@ const checkout = async () => {
       timeout: 2000,
       color: "red"
     });
+  } finally {
+    checkoutLoading.value = false;
   }
 };
 
@@ -238,7 +242,7 @@ watch(name, debouncedFetchProducts);
             <span>Total:</span>
             <span>${{ totalPrice }}</span>
           </div>
-          <UButton @click="checkout" :disabled="cart.length === 0">
+          <UButton @click="checkout" :disabled="cart.length === 0 || checkoutLoading" :loading="checkoutLoading">
             Checkout
           </UButton>
         </div>
