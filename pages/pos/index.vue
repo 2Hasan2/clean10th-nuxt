@@ -217,7 +217,7 @@ watch(name, debouncedFetchProducts);
 
               <span class="flex gap-2">
                 <UInput v-model="item.quantity" :ui="{ base: 'w-16' }" type="number" min="1" :max="item.stock?.quantity"
-                  :color="item.quantity > (item.stock?.quantity ?? 0) ? 'red' : 'white'" /> x
+                  :color="item.quantity > (item.stock?.quantity ?? 0) ? 'red' : 'white'" :disabled="checkoutLoading" /> x
                 <span>
                   ${{ item.price }}
                 </span>

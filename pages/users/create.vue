@@ -59,15 +59,15 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             <UCardBody>
                 <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
                     <UFormGroup label="Email" name="email">
-                        <UInput v-model="state.email" />
+                        <UInput v-model="state.email"  :disabled="loading"/>
                     </UFormGroup>
                     <UFormGroup label="Password" name="password">
-                        <UInput v-model="state.password" type="password" />
+                        <UInput v-model="state.password" type="password" :disabled="loading" />
                     </UFormGroup>
                     <UFormGroup label="Name" name="name">
-                        <UInput v-model="state.name" />
+                        <UInput v-model="state.name" :disabled="loading" />
                     </UFormGroup>
-                    <UButton type="submit" :loading="loading" >Create User</UButton>
+                    <UButton type="submit" :loading="loading"  :disabled="loading">Create User</UButton>
                 </UForm>
             </UCardBody>
         </UCard>

@@ -28,7 +28,7 @@ const state = reactive({
 })
 
 const toast = useToast()
-
+const loading = ref(false)
 const nameCategory = ref<string>('')
 const categories = ref<any>([])
 
@@ -65,8 +65,9 @@ watch(selectedCategory, (value) => {
 })
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
+    loading.value = true
     try {
-        const response = await $fetch('/api/categories', {
+        await $fetch('/api/categories', {
             method: 'POST',
             body: event.data,
         })
@@ -74,19 +75,20 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             title: 'Category has been created successfully',
             timeout: 1000,
         })
+        state.name = ''
+        state.description = ''
+        selectedCategory.value = {
+            label: '',
+            value: ''
+        }
     } catch (error) {
         const errorResponse = error as { data: { error: string } }
         toast.add({
             title: 'Error creating category',
             description: errorResponse.data.error || 'An error occurred',
         })
-    }
-    // clear form
-    state.name = ''
-    state.description = ''
-    selectedCategory.value = {
-        label: '',
-        value: ''
+    } finally {
+        loading.value = false
     }
 }
 </script>
@@ -95,11 +97,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
     
     <UFormGroup label="Name" name="name">
-      <UInput v-model="state.name" />
+      <UInput v-model="state.name" placeholder="Enter category's name" :disabled="loading"/>
     </UFormGroup>
 
     <UFormGroup label="Description" name="description">
-      <UTextarea v-model="state.description" />
+      <UTextarea v-model="state.description" placeholder="Enter category's description" :disabled="loading" />
     </UFormGroup>
 
     <UFormGroup label="Category" name="parentId">
@@ -108,10 +110,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         v-model:query="nameCategory"
         :options="categories?.map((category: any) => ({ label: category.name, value: category.id }))"
         placeholder="Search for category..."
+        :disabled="loading"
       />
     </UFormGroup>
 
-    <UButton type="submit">
+    <UButton type="submit" :loading="loading" :disabled="loading">
       Submit
     </UButton>
   </UForm>

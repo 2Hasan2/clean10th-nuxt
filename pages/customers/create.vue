@@ -28,8 +28,10 @@ const state = reactive({
 });
 
 const toast = useToast();
+const loading = ref(false);
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
+  loading.value = true;
   try {
     const response = await $fetch('/api/customers', {
       method: 'POST',
@@ -49,6 +51,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       title: 'Error creating customer',
       description: errorResponse.data.error || 'An error occurred',
     });
+  } finally {
+    loading.value = false;
   }
 }
 </script>
@@ -56,22 +60,22 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 <template>
   <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
     <UFormGroup label="Name" name="name">
-      <UInput v-model="state.name" placeholder="Enter customer's name" />
+      <UInput v-model="state.name" placeholder="Enter customer's name" :disabled="loading"/>
     </UFormGroup>
 
     <UFormGroup label="Email" name="email">
-      <UInput v-model="state.email" type="email" placeholder="Enter customer's email" />
+      <UInput v-model="state.email" type="email" placeholder="Enter customer's email" :disabled="loading"/>
     </UFormGroup>
 
     <UFormGroup label="Phone" name="phone">
-      <UInput v-model="state.phone" placeholder="Enter customer's phone number" />
+      <UInput v-model="state.phone" placeholder="Enter customer's phone number" :disabled="loading" />
     </UFormGroup>
 
     <UFormGroup label="Address" name="address">
-      <UTextarea v-model="state.address" placeholder="Enter customer's address" />
+      <UTextarea v-model="state.address" placeholder="Enter customer's address" :disabled="loading" />
     </UFormGroup>
 
-    <UButton type="submit">
+    <UButton type="submit" :loading="loading" :disabled="loading">
       Submit
     </UButton>
   </UForm>

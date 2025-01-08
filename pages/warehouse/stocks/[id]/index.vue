@@ -50,6 +50,7 @@ async function fetchStock() {
 }
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
+    loading.value = true
     try {
         const response = await $fetch(`/api/products/stock/${route.params.id}`, {
             method: "POST",
@@ -75,6 +76,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             description: errorResponse.data.error || 'An error occurred',
             color: 'red'
         })
+    } finally {
+        loading.value = false
     }
 }
 
@@ -89,10 +92,10 @@ onMounted(() => {
         <UInput size="lg" :loading="loading" min="0" v-model="state.quantity" type="number" />
     </UFormGroup>
     <UButtonGroup>
-        <UButton type="submit">
+        <UButton type="submit" :loading="loading" :disabled="loading">
           Submit
         </UButton>
-        <UButton type="button" color="yellow" @click="fetchStock">
+        <UButton type="button" color="yellow" @click="fetchStock" :disabled="loading">
             Reset
         </UButton>
     </UButtonGroup>

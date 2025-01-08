@@ -100,13 +100,14 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       <h2 class="text-xl font-semibold">Update User</h2>
         <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
           <UFormGroup label="Email" name="email">
-            <UInput :loading="loading" v-model="state.email" />
+            <UInput :loading="loading" v-model="state.email"  :disabled="loading" />
           </UFormGroup>
           <UFormGroup label="Password" autocomplete="off" name="password">
             <UInput :loading="loading" autocomplete="off"
               v-model="state.password"
               :type="showPassword ? 'text' : 'password'"
               :ui="{ icon: { trailing: { pointer: '' } } }"
+              :disabled="loading"
               placeholder="Leave blank to keep current password" >
               <template #trailing>
                 <UButton
@@ -120,12 +121,12 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             </UInput>
           </UFormGroup>
           <UFormGroup label="Role" name="role">
-            <USelect :loading="loading" v-model="state.role" :options="['ADMIN', 'USER', 'ACCOUNTANT', 'CASHIER']" />
+            <USelect :loading="loading" v-model="state.role"  :disabled="loading" :options="['ADMIN', 'USER', 'ACCOUNTANT', 'CASHIER']" />
           </UFormGroup>
           <UFormGroup label="Name" name="name">
-            <UInput :loading="loading" v-model="state.name" />
+            <UInput :loading="loading" v-model="state.name" :disabled="loading" />
           </UFormGroup>
-          <UButton type="submit" :loading="loading">Update User</UButton>
+          <UButton type="submit" :loading="loading" :disabled="loading">Update User</UButton>
         </UForm>
     </UCard>
   </div>

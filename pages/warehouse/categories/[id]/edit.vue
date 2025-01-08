@@ -9,5 +9,5 @@ definePageMeta({
 </script>
 
 <template>
-    edit for {{ $route.params.id }}
+    <UnderDevelopment />
 </template>

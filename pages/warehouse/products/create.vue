@@ -30,7 +30,7 @@ const state = reactive({
 })
 
 const toast = useToast()
-
+const loading = ref(true);
 const nameCategory = ref<string>('')
 const categories = ref<any>([])
 
@@ -67,6 +67,7 @@ watch(selectedCategory, (value) => {
 })
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
+    loading.value = true
     try {
         const response = await $fetch('/api/products', {
             method: 'POST',
@@ -90,6 +91,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             description: errorResponse.data.error || 'An error occurred',
             color: 'red'
         })
+    } finally {
+        loading.value = false
     }
 }
 </script>
@@ -98,15 +101,15 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
     
     <UFormGroup label="Name" name="name">
-      <UInput v-model="state.name" />
+      <UInput v-model="state.name" placeholder="Enter product's name" :disabled="loading"/>
     </UFormGroup>
 
     <UFormGroup label="Description" name="description">
-      <UTextarea v-model="state.description" />
+      <UTextarea v-model="state.description" placeholder="Enter product's description" :disabled="loading" />
     </UFormGroup>
 
     <UFormGroup label="Price" name="price">
-      <UInput v-model="state.price" type="number" />
+      <UInput v-model="state.price" type="number" placeholder="Enter product's price" :disabled="loading" />
     </UFormGroup>
 
     <UFormGroup label="Category" name="categoryId">
@@ -115,10 +118,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         v-model:query="nameCategory"
         :options="categories?.map((category: any) => ({ label: category.name, value: category.id }))"
         placeholder="Search for category..."
+        :disabled="loading"
       />
     </UFormGroup>
 
-    <UButton type="submit">
+    <UButton type="submit" :loading="loading" :disabled="loading">
       Submit
     </UButton>
   </UForm>
