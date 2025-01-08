@@ -49,6 +49,11 @@ export default defineEventHandler(async (event) => {
         price,
         image,
         categoryId,
+        stock: {
+          create: {
+            quantity: 0,
+          },
+        },
       },
     });
 

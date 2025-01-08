@@ -91,12 +91,12 @@ const items = (row:any) => [
   {
     label: 'View',
     icon: 'i-heroicons-eye-20-solid',
-    click: () => navigateTo(`/stock/products/${row.id}`),
+    click: () => navigateTo(`/warehouse/products/${row.id}`),
   },  
   {
     label: 'Edit',
     icon: 'i-heroicons-pencil-square-20-solid',
-    click: () => navigateTo(`/stock/products/${row.id}/edit`),
+    click: () => navigateTo(`/warehouse/products/${row.id}/edit`),
   },{
     label: 'Delete',
     icon: 'i-heroicons-trash-20-solid',
@@ -109,7 +109,7 @@ const items = (row:any) => [
   <div>
     <div class="flex justify-between px-3 py-3.5 border-b border-gray-200 dark:border-gray-700">
         <UInput v-model="name" placeholder="Filter people..." />
-        <UButton to="/stock/products/create">
+        <UButton to="/warehouse/products/create">
             <template #leading>
                 <UIcon name="lucide:package-plus" class="w-5 h-5" />
             </template>
@@ -125,7 +125,7 @@ const items = (row:any) => [
     :columns="columns">
     <template #name-data="{ row }">
       <ULink 
-      :to="`/stock/products/${row.id}`"
+      :to="`/warehouse/products/${row.id}`"
       active-class="text-primary-800"
       inactive-class="text-primary-500 dark:text-primary-400 hover:text-gray-700 dark:hover:text-gray-200"
       >{{ row.name }}</ULink>

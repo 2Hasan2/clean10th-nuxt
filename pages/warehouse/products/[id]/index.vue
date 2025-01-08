@@ -68,7 +68,7 @@ onMounted(() => {
                         </div>
                         <div class="flex items-center space-x-2 mt-2">
                             <UIcon name="fluent-emoji-flat:tag" class="w-5 h-5 text-gray-400" />
-                            <ULink :to="`/warehouseouse/categories/${product.category.id}`" active-class="text-primary-800"
+                            <ULink :to="`/warehouse/categories/${product.category.id}`" active-class="text-primary-800"
                                 inactive-class="text-primary-500 dark:text-primary-400 hover:text-gray-700 dark:hover:text-gray-200">
                                 <span class="text-gray-400">
                                     Category:
@@ -85,7 +85,7 @@ onMounted(() => {
                         </span>
                     </div>
                     <div class="flex items-center">
-                        <UButton :to="`/warehouseouse/products/${product.id}/edit`">
+                        <UButton :to="`/warehouse/products/${product.id}/edit`">
                             Edit
                         </UButton>
                         <UButton @click="deleteProduct(product.id)" color="red" class="ml-2">

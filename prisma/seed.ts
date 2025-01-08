@@ -32,6 +32,11 @@ async function main() {
         category: {
           connect: { id: faker.helpers.arrayElement(categories).id },
         },
+        stock: {
+          create: {
+            quantity: faker.number.int({ min: 1, max: 100 }),
+          },
+        },
         createdAt: new Date(),
         updatedAt: new Date(),
       },
