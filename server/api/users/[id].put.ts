@@ -1,9 +1,11 @@
 import prisma from "~/lib/prisma";
+import bcrypt from "bcryptjs";
+
 
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event);
-    const { name, email } = body;
+    const { name, email, role, password } = body;
 
     const id = event.context.params?.id;
 
@@ -56,6 +58,8 @@ export default defineEventHandler(async (event) => {
       data: {
         name: name || existingUser.name,
         email: email || existingUser.email,
+        role: role || existingUser.role,
+        password: password ? await bcrypt.hash(password, 10) : existingUser.password,
       },
     });
 

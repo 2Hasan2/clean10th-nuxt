@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import type { Customer } from "@prisma/client";
-
 definePageMeta({
     breadcrumb: {
         label: "view",
         icon: 'catppuccin:folder'
     },
+    requiresAuth: true,
 });
 
-const customer = ref<Customer | null>(null);
+const customer = ref<any | null>(null);
 
 const route = useRoute()
 const router = useRouter()
@@ -20,11 +19,7 @@ const fetchCustomer = async () => {
             console.error(res.error);
             return;
         }
-        customer.value = {
-            ...res,
-            createdAt: new Date(res.createdAt),
-            updatedAt: new Date(res.updatedAt),
-        };
+        customer.value = res
     } catch (error) {
         console.error(error);
     }

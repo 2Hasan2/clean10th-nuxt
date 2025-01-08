@@ -7,12 +7,14 @@ definePageMeta({
     icon: 'catppuccin:salesforce'
   },
   layout: 'pos',
+  requiresAuth: true,
 });
 
 interface Product {
   id: string;
   name: string;
   price: number;
+  image: string | null;
   stock: {
     id: string;
     createdAt: string;
@@ -127,6 +129,12 @@ const checkout = async () => {
       timeout: 2000,
       color: "green"
     });
+    cart.value.forEach(item => {
+      const product = productPagenation.value.products.find(product => product.id === item.id);
+      if (product && product.stock) {
+        product.stock.quantity -= item.quantity;
+      }
+    });
     cart.value = [];
   } catch (error) {
     toast.add({
@@ -165,10 +173,12 @@ watch(name, debouncedFetchProducts);
             <UTooltip class="flex flex-col gap-2 p-2 border border-gray-800 rounded"
               :text="`${product.name} ${product.stock?.quantity}`"
               :ui="{ base: 'flex items-center p-2 text-md h-full' }" :popper="{ placement: 'right', arrow: true }">
+              <!-- <img :src="`${product.image}`" class="w-full h-32 object-cover" /> -->
               <div class="flex justify-between gap-2 items-center">
-                <span class="text-lg whitespace-nowrap overflow-hidden text-ellipsis" title="{{ product.name }}">
+                <ULink class="text-lg whitespace-nowrap overflow-hidden text-ellipsis"
+                  :to="`/warehouse/products/${product.id}`">
                   {{ product.name }}
-                </span>
+                </ULink>
                 <UBadge color="emerald" variant="subtle">${{ product.price }}</UBadge>
               </div>
               <UButton @click="addProductToCart(product)"
@@ -202,7 +212,8 @@ watch(name, debouncedFetchProducts);
               <span>{{ item.name }}</span>
 
               <span class="flex gap-2">
-                <UInput v-model="item.quantity" :ui="{ base: 'w-16' }" type="number" min="1" /> x
+                <UInput v-model="item.quantity" :ui="{ base: 'w-16' }" type="number" min="1" :max="item.stock?.quantity"
+                  :color="item.quantity > (item.stock?.quantity ?? 0) ? 'red' : 'white'" /> x
                 <span>
                   ${{ item.price }}
                 </span>
@@ -213,7 +224,7 @@ watch(name, debouncedFetchProducts);
                   <UButton icon="lucide:diamond-minus" size="sm" color="yellow" square variant="solid"
                     @click="item.quantity--" :disabled="item.quantity === 1" />
                   <UButton icon="lucide:diamond-plus" size="sm" color="blue" square variant="solid"
-                    @click="item.quantity++" />
+                    @click="item.quantity++" :disabled="item.quantity === (item.stock?.quantity ?? 0)" />
                 </div>
                 <UButton block color="red" @click="cart.splice(cart.indexOf(item), 1)">
                   delete

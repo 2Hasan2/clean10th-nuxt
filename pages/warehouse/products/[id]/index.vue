@@ -1,21 +1,22 @@
 <script setup lang="ts">
-import type { Product, Category } from "@prisma/client";
+import type { Product, Category, Stock } from "@prisma/client";
 
 definePageMeta({
     breadcrumb: {
         label: "view",
         icon: 'catppuccin:folder'
     },
+    requiresAuth: true,
 });
 
-const product = ref<Product & { category: Category } | null>(null);
+const product = ref<Product & { category: Category, stock: Stock | null} | null>(null);
 
 const route = useRoute()
 const router = useRouter()
 
 const fetchProduct = async () => {
     try {
-        const res = await $fetch(`/api/products/${route.params.id}`);
+        const res = await $fetch<Product & { category: Category, stock: Stock | null }>(`/api/products/${route.params.id}`);
         if ('error' in res) {
             console.error(res.error);
             return;
@@ -28,7 +29,12 @@ const fetchProduct = async () => {
                 ...res.category,
                 createdAt: new Date(res.category.createdAt),
                 updatedAt: new Date(res.category.updatedAt)
-            }
+            },
+            stock: res.stock ? {
+                ...res.stock,
+                createdAt: new Date(res.stock.createdAt),
+                updatedAt: new Date(res.stock.updatedAt)
+            } : null
         };
     } catch (error) {
         console.error(error);
@@ -75,6 +81,18 @@ onMounted(() => {
                                 </span>
                                 <span>
                                     {{ product.category.name }}
+                                </span>
+                            </ULink>
+                        </div>
+                        <div class="flex items-center space-x-2 mt-2" v-if="product.stock">
+                            <UIcon name="fluent-emoji-flat:tag" class="w-5 h-5 text-gray-400" />
+                            <ULink :to="`/warehouse/stocks/${product.stock.id}`" active-class="text-primary-800"
+                                inactive-class="text-primary-500 dark:text-primary-400 hover:text-gray-700 dark:hover:text-gray-200">
+                                <span class="text-gray-400">
+                                    Quantity:
+                                </span>
+                                <span>
+                                    {{ product.stock?.quantity ?? 0 }}
                                 </span>
                             </ULink>
                         </div>

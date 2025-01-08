@@ -6,6 +6,7 @@ definePageMeta({
         label: "view",
         icon: 'catppuccin:folder'
     },
+    requiresAuth: true,
 });
 
 const category = ref<Category & { products: Product[], parent: Category | null } | null>(null);

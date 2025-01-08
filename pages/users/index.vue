@@ -2,8 +2,8 @@
 import debounce from 'lodash/debounce';
 definePageMeta({
   breadcrumb: {
-    label: 'Customers',
-    icon: 'heroicons-outline:user-group',
+    label: 'Users',
+    icon: 'catppuccin:folder-admin'
   },
   requiresAuth: true,
 });
@@ -20,8 +20,8 @@ const columns = [
     sortable: true,
   },
   {
-    key: 'phone',
-    label: 'Phone',
+    key: 'role',
+    label: 'Role',
     sortable: true,
   },
   {
@@ -31,23 +31,24 @@ const columns = [
 ];
 
 const name = ref('');
+const email = ref('');
 const page = ref(1);
 const limit = ref(5);
 const sortBy = ref('name');
 const sortOrder = ref('asc');
 const loading = ref(true);
 
-const customers = ref<any>([]);
+const users = ref<any>([]);
 const totalCount = ref(0);
 const totalPages = ref(0);
 
-const fetchCustomers = async () => {
+const fetchUsers = async () => {
   loading.value = true;
   try {
-    const response = await $fetch('/api/customers', {
+    const response = await $fetch('/api/users', {
       params: {
         name: name.value,
-        email: name.value,
+        email: email.value,
         page: page.value,
         limit: limit.value,
         sortBy: sortBy.value,
@@ -55,33 +56,33 @@ const fetchCustomers = async () => {
       },
     });
 
-    customers.value = response.customers;
+    users.value = response.users;
     totalCount.value = response.totalCount;
     totalPages.value = response.totalPages;
   } catch (error) {
-    console.error('Error fetching customers:', error);
+    console.error('Error fetching users:', error);
   } finally {
     loading.value = false;
   }
 };
 
-const debouncedFetchCustomers = debounce(fetchCustomers, 300);
+const debouncedFetchUsers = debounce(fetchUsers, 300);
 
-watch([name], debouncedFetchCustomers);
+watch([name, email], debouncedFetchUsers);
 
-watch([page, limit, sortBy, sortOrder], fetchCustomers);
+watch([page, limit, sortBy, sortOrder], fetchUsers);
 
-onMounted(fetchCustomers);
+onMounted(fetchUsers);
 
-const deleteCustomer = async (customer: any) => {
-  if (confirm(`Are you sure you want to delete "${customer.name}"?`)) {
+const deleteUser = async (user: any) => {
+  if (confirm(`Are you sure you want to delete "${user.name}"?`)) {
     try {
-      await $fetch(`/api/customers/${customer.id}`, {
+      await $fetch(`/api/users/${user.id}`, {
         method: 'DELETE',
       });
-      fetchCustomers();
+      fetchUsers();
     } catch (error) {
-      console.error('Error deleting customer:', error);
+      console.error('Error deleting user:', error);
     }
   }
 };
@@ -91,17 +92,17 @@ const items = (row: any) => [
     {
       label: 'View',
       icon: 'i-heroicons-eye-20-solid',
-      click: () => navigateTo(`/customers/${row.id}`),
+      click: () => navigateTo(`/users/${row.id}`),
     },
     {
       label: 'Edit',
       icon: 'i-heroicons-pencil-square-20-solid',
-      click: () => navigateTo(`/customers/${row.id}/edit`),
+      click: () => navigateTo(`/users/${row.id}/edit`),
     },
     {
       label: 'Delete',
       icon: 'i-heroicons-trash-20-solid',
-      click: () => deleteCustomer(row),
+      click: () => deleteUser(row),
     },
   ],
 ];
@@ -110,20 +111,29 @@ const items = (row: any) => [
 <template>
   <div>
     <div class="flex justify-between px-3 py-3.5 border-b border-gray-200 dark:border-gray-700">
-      <UInput v-model="name" placeholder="Filter customers by name..." />
-      <UButton to="/customers/create">
+      <UInput v-model="name" placeholder="Filter users by name..." />
+      <UInput v-model="email" placeholder="Filter users by email..." />
+      <UButton to="/users/create">
         <template #leading>
           <UIcon name="lucide:user-plus" class="w-5 h-5" />
         </template>
-        <span>Add Customer</span>
+        <span>Add</span>
       </UButton>
     </div>
 
-    <UTable :loading="loading" :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Loading...' }"
-      :progress="{ color: 'primary', animation: 'carousel' }" :rows="customers" :columns="columns">
+    <UTable
+      :loading="loading"
+      :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Loading...' }"
+      :progress="{ color: 'primary', animation: 'carousel' }"
+      :rows="users"
+      :columns="columns"
+    >
       <template #name-data="{ row }">
-        <ULink :to="`/customers/${row.id}`" active-class="text-primary-800"
-          inactive-class="text-primary-500 dark:text-primary-400 hover:text-gray-700 dark:hover:text-gray-200">
+        <ULink
+          :to="`/users/${row.id}`"
+          active-class="text-primary-800"
+          inactive-class="text-primary-500 dark:text-primary-400 hover:text-gray-700 dark:hover:text-gray-200"
+        >
           {{ row.name }}
         </ULink>
       </template>
@@ -135,13 +145,17 @@ const items = (row: any) => [
       </template>
       <template #empty-state>
         <div class="flex flex-col items-center justify-center py-6 gap-3">
-          <span class="italic text-sm">No customers found</span>
+          <span class="italic text-sm">No users found</span>
         </div>
       </template>
     </UTable>
 
     <div class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
-      <UPagination v-model="page" :page-count="limit" :total="totalCount" />
+      <UPagination
+        v-model="page"
+        :page-count="limit"
+        :total="totalCount"
+      />
     </div>
   </div>
 </template>

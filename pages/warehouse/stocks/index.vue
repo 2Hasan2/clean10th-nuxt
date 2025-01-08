@@ -6,6 +6,7 @@ definePageMeta({
     label: 'Stocks',
     icon: 'catppuccin:taskfile',
   },
+  requiresAuth: true,
 });
 
 const columns = [

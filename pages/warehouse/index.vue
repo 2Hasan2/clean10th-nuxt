@@ -4,6 +4,7 @@ definePageMeta({
     label: 'Warehouse',
     icon: 'catppuccin:folder-packages'
   },
+  requiresAuth: true,
 });
 </script>
 <template>

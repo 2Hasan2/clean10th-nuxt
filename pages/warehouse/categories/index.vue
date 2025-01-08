@@ -5,6 +5,7 @@ definePageMeta({
     label: 'Categories',
     icon: 'catppuccin:taskfile',
   },
+  requiresAuth: true,
 });
 
 const columns = [
@@ -127,7 +128,7 @@ const items = (row: any) => [
     </UTable>
 
     <div class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
-      <UPagination v-model="page" :page-count="totalPages" :total="totalCount" />
+      <UPagination v-model="page" :page-count="limit" :total="totalCount" />
     </div>
   </div>
 </template>

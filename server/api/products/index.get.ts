@@ -14,11 +14,13 @@ export default defineEventHandler(async (event) => {
     ...(name && {
       name: {
         contains: name as string,
+        mode: "insensitive",
       },
     }),
     ...(description && {
       description: {
         contains: description as string,
+        mode: "insensitive",
       },
     }),
   };

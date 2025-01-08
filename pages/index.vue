@@ -4,12 +4,13 @@ definePageMeta({
         label: 'Home',
         icon: 'catppuccin:folder'
     },
+    requiresAuth: true,
 });
+const auth = useAuthStore();
 </script>
 
 <template>
     <div class="flex flex-wrap gap-2">
-
         <UCard class="min-w-1/4 max-w-full">
             <template #header>
                 <h2 class="text-lg font-semibold">Warehouse</h2>

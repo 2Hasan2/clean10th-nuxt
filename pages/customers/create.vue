@@ -4,12 +4,11 @@ definePageMeta({
     label: 'Create Customer',
     icon: 'heroicons-outline:user-plus',
   },
+  requiresAuth: true,
 });
 
 import { object, string, type InferType } from 'yup';
 import type { FormSubmitEvent } from '#ui/types';
-import debounce from 'lodash/debounce';
-import { ref, watch } from 'vue';
 
 // Define validation schema
 const schema = object({

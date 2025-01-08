@@ -13,6 +13,7 @@ export default defineEventHandler(async (event) => {
     ...(name && {
       name: {
         contains: name as string,
+        mode: "insensitive",
       },
     }),
     deletedAt: null,

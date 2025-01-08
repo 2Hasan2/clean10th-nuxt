@@ -10,6 +10,7 @@ definePageMeta({
     label: "Orders",
     icon: "catppuccin:folder-scripts",
   },
+  requiresAuth: true,
 });
 
 const columns = [

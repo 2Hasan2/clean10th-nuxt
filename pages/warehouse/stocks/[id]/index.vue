@@ -4,6 +4,7 @@ definePageMeta({
     label: 'edit',
     icon: 'catppuccin:follder',
   },
+  requiresAuth: true,
 });
 
 import { object, number, type InferType } from 'yup'
@@ -28,6 +29,14 @@ async function fetchStock() {
     loading.value = true
     try {
         const response = await $fetch(`/api/products/stock/${route.params.id}`)
+        if ('error' in response) {
+            toast.add({
+                title: 'Error fetching stock',
+                description: response.error,
+                color: 'red'
+            })
+            return
+        }
         state.quantity = response.quantity
     } catch (error) {
         toast.add({
@@ -46,6 +55,14 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             method: "POST",
             body: event.data,
         })
+        if ('error' in response) {
+            toast.add({
+                title: 'Error updating stock',
+                description: response.error,
+                color: 'red'
+            })
+            return
+        }
         toast.add({
             title: 'Stock updated',
             timeout: 1000,

@@ -1,12 +1,13 @@
-<script setup lang="ts">
+<script>
 definePageMeta({
   breadcrumb: {
-    label: 'Admin',
+    label: 'Users',
     icon: 'catppuccin:folder-admin'
   },
+  requiresAuth: true,
 });
 </script>
 
 <template>
-    admin
+    index for {{ $route.params.id }}
 </template>

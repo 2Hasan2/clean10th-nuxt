@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { object, string, type InferType } from 'yup'
 import type { FormSubmitEvent } from '#ui/types'
-import type { Users } from "@prisma/client"
-import { reactive, onMounted } from 'vue'
+
 definePageMeta({
     breadcrumb: {
         label: 'users',
         icon: 'catppuccin:folder'
     },
-    layout: 'pos',
+    requiresAuth: true,
 });
 
-const users = reactive<Users[]>([])
+const loading = ref(false)
+const toast = useToast()
 
 const schema = object({
     email: string().email('Invalid email').required('Required'),
@@ -27,49 +27,31 @@ const state = reactive<Schema>({
     name: ''
 })
 
-async function listUsers() {
-    try {
-        const response = await $fetch('/api/users')
-        users.splice(0, users.length, ...response.users.map((user: any) => ({
-            ...user,
-            createdAt: new Date(user.createdAt),
-            updatedAt: new Date(user.updatedAt)
-        })))
-    } catch (error) {
-        console.error('Error fetching users:', error)
-    }
-}
-
 async function onSubmit(event: FormSubmitEvent<Schema>) {
+    loading.value = true
     try {
-        const response = await $fetch('/api/users', {
+        await $fetch('/api/users', {
             method: 'POST',
             body: event.data
         })
+        toast.add({
+            title: 'User created',
+            timeout: 1000,
+        })
     } catch (error) {
-        console.error('Submission error:', error)
+        toast.add({
+            title: 'Error creating user',
+            description: (error as any)?.data?.error || 'An error occurred',
+            color: 'red'
+        })
+    } finally {
+        loading.value = false
     }
 }
-
-onMounted(() => {
-    listUsers()
-})
 </script>
 
 <template>
     <div class="w-60">
-        <UCard>
-            <UCardHeader>
-                <h2 class="text-xl font-semibold">Users</h2>
-            </UCardHeader>
-            <UCardBody>
-                <UList>
-                    <UListItem v-for="user in users" :key="user.id">
-                        <ULink :href="`/users/${user.id}`">{{ user.name }}</ULink>
-                    </UListItem>
-                </UList>
-            </UCardBody>
-        </UCard>
         <UCard>
             <UCardHeader>
                 <h2 class="text-xl font-semibold">Create User</h2>
@@ -85,7 +67,7 @@ onMounted(() => {
                     <UFormGroup label="Name" name="name">
                         <UInput v-model="state.name" />
                     </UFormGroup>
-                    <UButton type="submit">Create User</UButton>
+                    <UButton type="submit" :loading="loading" >Create User</UButton>
                 </UForm>
             </UCardBody>
         </UCard>

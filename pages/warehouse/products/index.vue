@@ -5,6 +5,7 @@ definePageMeta({
     label: 'Products',
     icon: 'catppuccin:taskfile',
   },
+  requiresAuth: true,
 });
 
 const columns = [
@@ -76,7 +77,7 @@ onMounted(fetchProducts);
 const deleteProduct= async (product: any) => {
   if (confirm(`Are you sure you want to delete "${product.name}"?`)) {
     try {
-      await $fetch(`/api/products/${product.id}`, {
+      const response = await $fetch(`/api/products/${product.id}`, {
         method: 'DELETE',
       });
       fetchProducts();
