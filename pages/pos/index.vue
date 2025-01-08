@@ -12,6 +12,9 @@ interface Product {
   id: string;
   name: string;
   price: number;
+  stock: {
+    quantity: number;
+  }
 }
 
 interface Costumer {
@@ -84,7 +87,9 @@ const totalPrice = computed(() => {
 const addProductToCart = (product: Product) => {
   const existingItem = cart.value.find(item => item.id === product.id);
   if (existingItem) {
-    existingItem.quantity++;
+    if (existingItem.quantity < product.stock.quantity) {
+      existingItem.quantity++;
+    }
   } else {
     cart.value.push({ ...product, quantity: 1 });
   }
@@ -150,7 +155,9 @@ watch(name, debouncedFetchProducts);
         trailing placeholder="Search..." />
       <div class="flex flex-col h-full overflow-y-auto">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
-          <div class="min-w-32 p-1" v-for="product in productPagenation.products" :key="product.id">
+          <!-- if product.stock.quantity === cart.find(item => item.id === product.id)?.quantity, opacity-50 -->
+          <div class="min-w-32 p-1" v-for="product in productPagenation.products" :key="product.id"
+            :class="{ 'opacity-50': product.stock.quantity === cart.find(item => item.id === product.id)?.quantity }">
             <div class="flex flex-col gap-2 p-2 border border-gray-800 rounded">
               <div class="flex justify-between gap-2 items-center">
                 <span class="text-lg whitespace-nowrap overflow-hidden text-ellipsis" title="{{ product.name }}">
@@ -158,7 +165,8 @@ watch(name, debouncedFetchProducts);
                 </span>
                 <UBadge color="emerald" variant="subtle">${{ product.price }}</UBadge>
               </div>
-              <UButton @click="addProductToCart(product)">
+              <UButton @click="addProductToCart(product)"
+                :disabled="product.stock.quantity === cart.find(item => item.id === product.id)?.quantity">
                 Add
               </UButton>
             </div>

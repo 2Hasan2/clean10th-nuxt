@@ -34,6 +34,9 @@ export default defineEventHandler(async (event) => {
       orderBy: {
         [sortBy as string]: sortOrder === "asc" ? "asc" : "desc",
       },
+      include: {
+        stock: true,
+      },
     });
 
     const totalCount = await prisma.product.count({
