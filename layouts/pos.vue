@@ -1,4 +1,24 @@
 <script setup lang="ts">
+import {useAuthStore} from '~/stores/auth';
+const auth = useAuthStore();
+
+const items = [
+  [{
+    label: 'Edit',
+    slot: 'edit',
+    icon: 'i-heroicons-pencil-square-20-solid',
+    click: () => {
+      console.log('Edit')
+    }
+  }], [{
+    label: 'Logout',
+    slot: 'logout',
+    icon: 'lucide:log-out',
+    click: async () => {
+      auth.logout();
+    }
+  }]
+]
 </script>
 
 <template>
@@ -7,16 +27,24 @@
       <UCard>
         <div class="flex flex-row justify-between items-center">
           <Breadcrumb />
-          <UPopover class="flex" mode="hover">
-            <UAvatar chip-color="red" chip-text="" chip-position="top-right" size="md"
-              src="https://avatars.githubusercontent.com/u/739984?v=4" alt="Avatar" />
-            <template #panel>
-              <div class="p-4">
-                fuck off
-                <UIcon name="catppuccin:folder-packages" class="w-5 h-5" />
-              </div>
+          <UDropdown :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }" :popper="{ placement: 'bottom-start' }">
+
+            <UBadge color="primary" class="flex-shrink-0" v-if="auth.user">
+              {{ auth.user.name }}
+            </UBadge>
+
+            <template #edit="{ item }" v-if="auth.user">
+              <span class="truncate">{{ item.label }}</span>
+
+              <UIcon :name="item.icon" class="flex-shrink-0 h-4 w-4 text-gray-400 dark:text-gray-500 ms-auto" />
             </template>
-          </UPopover>
+
+            <template #logout="{ item }" v-if="auth.user">
+              <span class="truncate">{{ item.label }}</span>
+
+              <UIcon :name="item.icon" class="flex-shrink-0 h-4 w-4 text-gray-400 dark:text-gray-500 ms-auto" />
+            </template>
+          </UDropdown>
         </div>
       </UCard>
       <UCard :ui="{
