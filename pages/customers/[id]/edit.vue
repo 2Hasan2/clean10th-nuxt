@@ -4,6 +4,7 @@ definePageMeta({
         label: 'edit',
         icon: 'catppuccin:folder'
     },
+    requiresAuth: true,
 });
 </script>
 
