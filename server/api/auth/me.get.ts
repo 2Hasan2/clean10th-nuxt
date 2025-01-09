@@ -29,6 +29,9 @@ export default defineEventHandler(async (event) => {
       id: user.id,
       name: user.name,
       email: user.email,
+      role: user.role,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     };
   } catch (error) {
     throw createError({ statusCode: 401, message: "Unauthorized" });

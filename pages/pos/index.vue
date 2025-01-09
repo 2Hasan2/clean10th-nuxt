@@ -9,6 +9,7 @@ definePageMeta({
   },
   layout: 'pos',
   requiresAuth: true,
+  role: ['CASHIER'],
 });
 
 interface Product {

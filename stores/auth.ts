@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia';
+import type { Users } from '@prisma/client'; 
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    user: null as { id: string; email: string; name: string } | null,
+    user: null as Omit<Users, 'password'> | null,
     token: useCookie('auth_token').value || null,
   }),
 
@@ -22,7 +23,11 @@ export const useAuthStore = defineStore('auth', {
           throw new Error(response.error);
         }
         
-        this.user = response.user;
+        this.user = {
+          ...response.user,
+          createdAt: new Date(response.user.createdAt),
+          updatedAt: new Date(response.user.updatedAt),
+        };
         this.token = response.token;
 
         const cookie = useCookie('auth_token');
@@ -58,7 +63,11 @@ export const useAuthStore = defineStore('auth', {
           throw new Error(response.error);
         }
 
-        this.user = response;
+        this.user = {
+          ...response,
+          createdAt: new Date(response.createdAt),
+          updatedAt: new Date(response.updatedAt),
+        };
       } catch (error) {
         console.error('Failed to fetch user:', error);
         this.logout();
