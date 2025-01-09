@@ -44,7 +44,7 @@ const auth = useAuthStore();
                 <h2 class="text-lg font-semibold">Orders</h2>
             </template>
             <div class="flex space-x-4">
-                <UButton to="/orders/products">
+                <UButton to="/orders">
                     <template #leading>
                         <UIcon name="lucide:package-plus" class="w-5 h-5" />
                     </template>
