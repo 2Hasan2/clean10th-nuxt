@@ -10,6 +10,7 @@ definePageMeta({
     icon: 'catppuccin:folder-admin'
   },
   requiresAuth: true,
+  middleware: ['role'],
 });
 
 const loading = ref(true);
@@ -27,7 +28,7 @@ const schema = object({
       !value || value.length >= 8
     ),
   name: string().required('Required').min(3, 'Must be at least 3 characters'),
-  role: string().required('Required').oneOf<Role>(['ADMIN', 'USER', 'ACCOUNTANT', 'CASHIER'], 'Invalid role'),
+  role: string().required('Required').oneOf<Role>(['ACCOUNTANT', 'CASHIER'], 'Invalid role'),
 });
 
 
@@ -35,9 +36,9 @@ type Schema = InferType<typeof schema>;
 
 const state = reactive<Schema>({
   email: '',
-  password: null,
+  password: '',
   name: '',
-  role: 'USER',
+  role: 'CASHIER',
 });
 
 async function fetchUser() {
@@ -98,36 +99,29 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   <div>
     <UCard>
       <h2 class="text-xl font-semibold">Update User</h2>
-        <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-          <UFormGroup label="Email" name="email">
-            <UInput :loading="loading" v-model="state.email"  :disabled="loading" />
-          </UFormGroup>
-          <UFormGroup label="Password" autocomplete="off" name="password">
-            <UInput :loading="loading" autocomplete="off"
-              v-model="state.password"
-              :type="showPassword ? 'text' : 'password'"
-              :ui="{ icon: { trailing: { pointer: '' } } }"
-              :disabled="loading"
-              placeholder="Leave blank to keep current password" >
-              <template #trailing>
-                <UButton
-                  color="gray"
-                  variant="link"
-                  :icon="showPassword ? 'lucide:eye-closed' : 'lucide:eye'"
-                  :padded="true"
-                  @click="showPassword = !showPassword"
-                />
-              </template>
-            </UInput>
-          </UFormGroup>
-          <UFormGroup label="Role" name="role">
-            <USelect :loading="loading" v-model="state.role"  :disabled="loading" :options="['ADMIN', 'USER', 'ACCOUNTANT', 'CASHIER']" />
-          </UFormGroup>
-          <UFormGroup label="Name" name="name">
-            <UInput :loading="loading" v-model="state.name" :disabled="loading" />
-          </UFormGroup>
-          <UButton type="submit" :loading="loading" :disabled="loading">Update User</UButton>
-        </UForm>
+      <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
+        <UFormGroup label="Email" name="email">
+          <UInput :loading="loading" v-model="state.email" :disabled="loading" />
+        </UFormGroup>
+        <UFormGroup label="Password" autocomplete="off" name="password">
+          <UInput :loading="loading" autocomplete="off" v-model="state.password!"
+            :type="showPassword ? 'text' : 'password'" :ui="{ icon: { trailing: { pointer: '' } } }" :disabled="loading"
+            placeholder="Leave blank to keep current password">
+            <template #trailing>
+              <UButton color="gray" variant="link" :icon="showPassword ? 'lucide:eye-closed' : 'lucide:eye'"
+                :padded="true" @click="showPassword = !showPassword" />
+            </template>
+          </UInput>
+        </UFormGroup>
+        <UFormGroup label="Role" name="role">
+          <USelect :loading="loading" v-model="state.role" :disabled="loading"
+            :options="['ACCOUNTANT', 'CASHIER']" />
+        </UFormGroup>
+        <UFormGroup label="Name" name="name">
+          <UInput :loading="loading" v-model="state.name" :disabled="loading" />
+        </UFormGroup>
+        <UButton type="submit" :loading="loading" :disabled="loading">Update User</UButton>
+      </UForm>
     </UCard>
   </div>
 </template>

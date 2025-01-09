@@ -5,8 +5,9 @@ definePageMeta({
         icon: 'catppuccin:folder'
     },
     requiresAuth: true,
+    middleware: ['role'],
+    role: ['CASHIER'],
 });
-
 const customer = ref<any | null>(null);
 
 const route = useRoute()
@@ -69,10 +70,11 @@ onMounted(() => {
                         </span>
                     </div>
                     <div class="flex items-center">
-                        <UButton :to="`/customers/${customer.id}/edit`">
+                        <!-- <UButton :to="`/customers/${customer.id}/edit`">
                             Edit
-                        </UButton>
-                        <UButton @click="deleteCustomer(customer.id)" color="red" class="ml-2">
+                        </UButton> -->
+                        <UButton @click="deleteCustomer(customer.id)" color="red" class="ml-2"
+                            v-if="$user.role === 'ADMIN'">
                             Delete
                         </UButton>
                     </div>

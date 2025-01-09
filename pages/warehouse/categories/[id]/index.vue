@@ -7,6 +7,8 @@ definePageMeta({
         icon: 'catppuccin:folder'
     },
     requiresAuth: true,
+    middleware: ['role'],
+    role: ['CASHIER', 'ACCOUNTANT'],
 });
 
 const category = ref<Category & { products: Product[], parent: Category | null } | null>(null);
@@ -103,11 +105,11 @@ onMounted(() => {
                                 {{ category.description }}
                             </span>
                         </div>
-                        <div class="flex items-center">
+                        <div class="flex items-center gap-2" v-if="$user.role === 'ADMIN'">
                             <UButton :to="`/warehouse/categories/${category.id}/edit`">
                                 Edit
                             </UButton>
-                            <UButton @click="deleteCategory(category.id)" color="red" class="ml-2">
+                            <UButton @click="deleteCategory(category.id)" color="red" v-if="!category.parent">
                                 Delete
                             </UButton>
                         </div>

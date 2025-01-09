@@ -3,6 +3,7 @@ import { object, string, type InferType } from 'yup'
 import type { FormSubmitEvent } from '#ui/types'
 import { useAuthStore } from '@/stores/auth';
 
+
 definePageMeta({
     breadcrumb: {
         label: 'login',
@@ -11,10 +12,16 @@ definePageMeta({
     layout: 'login',
 });
 
+
+
 const loading = ref(false);
 const toast = useToast();
 const router = useRouter();
 const auth = useAuthStore();
+
+if (auth.isAuthenticated) {
+    router.push('/')
+}
 
 const schema = object({
     email: string().email('Invalid email').required('Required'),
@@ -36,6 +43,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             title: 'User logged in',
             timeout: 1000,
         })
+        window.location.reload()
     } catch (error) {
         toast.add({
             title: 'Error logging in',
@@ -47,9 +55,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     }
 }
 
-if (auth.isAuthenticated) {
-    router.push('/')
-}
+
 
 </script>
 
@@ -66,5 +72,5 @@ if (auth.isAuthenticated) {
                 <UButton type="submit" :loading="loading" color="primary">Login</UButton>
             </UForm>
         </UCard>
-    </div>    
+    </div>
 </template>

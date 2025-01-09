@@ -8,6 +8,7 @@ definePageMeta({
         icon: 'catppuccin:folder'
     },
     requiresAuth: true,
+    middleware: ['role'],
 });
 
 const loading = ref(false)

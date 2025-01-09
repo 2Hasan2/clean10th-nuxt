@@ -5,6 +5,7 @@ definePageMeta({
     icon: 'catppuccin:taskfile',
   },
   requiresAuth: true,
+  middleware: ['role'],
 });
 
 import { object, string, number, type InferType } from 'yup'

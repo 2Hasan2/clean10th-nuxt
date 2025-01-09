@@ -1,10 +1,12 @@
 <script setup lang="ts">
 definePageMeta({
-  breadcrumb: {
-    label: 'Warehouse',
-    icon: 'catppuccin:folder-packages'
-  },
-  requiresAuth: true,
+    breadcrumb: {
+        label: 'Warehouse',
+        icon: 'catppuccin:folder-packages'
+    },
+    requiresAuth: true,
+    middleware: ['role'],
+    role: ['CASHIER', 'ACCOUNTANT'],
 });
 </script>
 <template>
@@ -15,7 +17,7 @@ definePageMeta({
             </template>
             <span>Products</span>
         </UButton>
-        
+
         <UButton to="/warehouse/categories">
             <template #leading>
                 <UIcon name="lucide:package-plus" class="w-5 h-5" />

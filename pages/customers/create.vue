@@ -5,6 +5,8 @@ definePageMeta({
     icon: 'heroicons-outline:user-plus',
   },
   requiresAuth: true,
+  middleware: ['role'],
+  role: ['CASHIER'],
 });
 
 import { object, string, type InferType } from 'yup';
@@ -60,11 +62,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 <template>
   <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
     <UFormGroup label="Name" name="name">
-      <UInput v-model="state.name" placeholder="Enter customer's name" :disabled="loading"/>
+      <UInput v-model="state.name" placeholder="Enter customer's name" :disabled="loading" />
     </UFormGroup>
 
     <UFormGroup label="Email" name="email">
-      <UInput v-model="state.email" type="email" placeholder="Enter customer's email" :disabled="loading"/>
+      <UInput v-model="state.email" type="email" placeholder="Enter customer's email" :disabled="loading" />
     </UFormGroup>
 
     <UFormGroup label="Phone" name="phone">

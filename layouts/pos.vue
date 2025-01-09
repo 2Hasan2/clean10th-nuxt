@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import {useAuthStore} from '~/stores/auth';
+import { useAuthStore } from '~/stores/auth';
 const auth = useAuthStore();
 
 const items = [
+  // [{
+  //   label: 'Edit',
+  //   slot: 'edit',
+  //   icon: 'i-heroicons-pencil-square-20-solid',
+  //   click: () => {
+  //     console.log('Edit')
+  //   }
+  // }],
   [{
-    label: 'Edit',
-    slot: 'edit',
-    icon: 'i-heroicons-pencil-square-20-solid',
-    click: () => {
-      console.log('Edit')
-    }
-  }], [{
     label: 'Logout',
     slot: 'logout',
     icon: 'lucide:log-out',
@@ -27,7 +28,8 @@ const items = [
       <UCard>
         <div class="flex flex-row justify-between items-center">
           <Breadcrumb />
-          <UDropdown :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }" :popper="{ placement: 'bottom-start' }">
+          <UDropdown :items="items" :ui="{ item: { disabled: 'cursor-text select-text' } }"
+            :popper="{ placement: 'bottom-start' }">
 
             <UBadge color="primary" class="flex-shrink-0" v-if="auth.user">
               {{ auth.user.name }}

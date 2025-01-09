@@ -5,6 +5,8 @@ definePageMeta({
         icon: 'catppuccin:folder'
     },
     requiresAuth: true,
+    middleware: ['role'],
+    role: ['CASHIER'],
 });
 </script>
 

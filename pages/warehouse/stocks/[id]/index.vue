@@ -1,10 +1,11 @@
 <script setup lang="ts">
 definePageMeta({
-  breadcrumb: {
-    label: 'edit',
-    icon: 'catppuccin:follder',
-  },
-  requiresAuth: true,
+    breadcrumb: {
+        label: 'edit',
+        icon: 'catppuccin:follder',
+    },
+    requiresAuth: true,
+    middleware: ['role'],
 });
 
 import { object, number, type InferType } from 'yup'
@@ -87,17 +88,17 @@ onMounted(() => {
 </script>
 
 <template>
-  <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-    <UFormGroup label="Quantity" name="quantity">
-        <UInput size="lg" :loading="loading" min="0" v-model="state.quantity" type="number" />
-    </UFormGroup>
-    <UButtonGroup>
-        <UButton type="submit" :loading="loading" :disabled="loading">
-          Submit
-        </UButton>
-        <UButton type="button" color="yellow" @click="fetchStock" :disabled="loading">
-            Reset
-        </UButton>
-    </UButtonGroup>
-  </UForm>
+    <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
+        <UFormGroup label="Quantity" name="quantity">
+            <UInput size="lg" :loading="loading" min="0" v-model="state.quantity" type="number" />
+        </UFormGroup>
+        <UButtonGroup>
+            <UButton type="submit" :loading="loading" :disabled="loading">
+                Submit
+            </UButton>
+            <UButton type="button" color="yellow" @click="fetchStock" :disabled="loading">
+                Reset
+            </UButton>
+        </UButtonGroup>
+    </UForm>
 </template>

@@ -5,6 +5,8 @@ definePageMeta({
         icon: 'catppuccin:folder-admin'
     },
     requiresAuth: true,
+    middleware: ['role'],
+    role: ['ACCOUNTANT', 'CASHIER'],
 });
 
 
@@ -135,7 +137,7 @@ onMounted(() => {
                             color="blue">
                             Print
                         </UButton>
-                        <UButton @click="deleteOrder(order.id!)" color="red">
+                        <UButton @click="deleteOrder(order.id!)" color="red" v-if="$user.role === 'ADMIN'">
                             Delete
                         </UButton>
                     </div>

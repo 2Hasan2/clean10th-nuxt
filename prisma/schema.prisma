@@ -58,11 +58,9 @@ model Stock {
 }
 
 enum Role {
-  SuperAdmin
   ADMIN
   CASHIER
   ACCOUNTANT
-  USER
 }
 
 model Users {
@@ -72,7 +70,7 @@ model Users {
   email    String @unique
   password String
 
-  role Role @default(USER)
+  role Role @default(CASHIER)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -6,6 +6,8 @@ definePageMeta({
     icon: 'catppuccin:taskfile',
   },
   requiresAuth: true,
+  middleware: ['role'],
+  role: ['CASHIER', 'ACCOUNTANT'],
 });
 
 const columns = [
@@ -19,11 +21,20 @@ const columns = [
     label: 'Description',
     sortable: true,
   },
-  {
+  // {
+  //   key: 'actions',
+  //   label: 'Actions',
+  // },
+];
+const { $user } = useNuxtApp()
+
+if ($user.role === 'ADMIN') {
+  columns.push({
     key: 'actions',
     label: 'Actions',
-  },
-];
+    sortable: false,
+  });
+}
 
 const name = ref('');
 const description = ref('');
@@ -82,17 +93,15 @@ const deleteCategory = async (id: string) => {
   }
 };
 
-const items = (row: any) => [
-  [{
-    label: 'Edit',
-    icon: 'i-heroicons-pencil-square-20-solid',
-    click: () => navigateTo(`/warehouse/categories/${row.id}/edit`),
-  }, {
-    label: 'Delete',
-    icon: 'i-heroicons-trash-20-solid',
-    click: () => deleteCategory(row),
-  }]
-];
+const items = (row: any) => {
+  const content = [
+    { label: 'Edit', icon: 'i-heroicons-pencil-square-20-solid', click: () => navigateTo(`/warehouse/categories/${row.id}/edit`), },
+    { label: 'Delete', icon: 'i-heroicons-trash-20-solid', click: () => deleteCategory(row), }
+  ]
+
+  return [content];
+
+}
 </script>
 
 <template>

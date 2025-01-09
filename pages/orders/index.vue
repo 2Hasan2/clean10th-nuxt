@@ -11,6 +11,8 @@ definePageMeta({
     icon: "catppuccin:folder-scripts",
   },
   requiresAuth: true,
+  middleware: ['role'],
+  role: ['ACCOUNTANT', 'CASHIER'],
 });
 
 const columns = [
@@ -223,7 +225,10 @@ function selectRange(duration: Duration & { start?: Date }) {
         tbody: 'divide-y divide-gray-200 dark:divide-gray-800',
       }">
       <template #customerName-data="{ row }">
-        <span>{{ row.customer.name }}</span>
+        <ULink :to="`/customers/${row.id}`" active-class="text-primary-800"
+          inactive-class="text-primary-500 dark:text-primary-400 hover:text-gray-700 dark:hover:text-gray-200">
+          {{ row.customer.name }}
+        </ULink>
       </template>
 
       <template #total-data="{ row }">
@@ -239,10 +244,10 @@ function selectRange(duration: Duration & { start?: Date }) {
           <UButton @click="navigateTo(`/orders/${row.id}`)">
             View
           </UButton>
-          <UButton color="blue" @click="navigateTo(`/orders/${row.id}/edit`)">
+          <!-- <UButton color="blue" @click="navigateTo(`/orders/${row.id}/edit`)">
             Edit
-          </UButton>
-          <UButton color="red" @click="deleteOrder(row)">
+          </UButton> -->
+          <UButton color="red" @click="deleteOrder(row)" v-if="$user.role === 'ADMIN'">
             Delete
           </UButton>
         </UButtonGroup>

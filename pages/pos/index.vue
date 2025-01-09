@@ -9,6 +9,7 @@ definePageMeta({
   },
   layout: 'pos',
   requiresAuth: true,
+  middleware: ['role'],
   role: ['CASHIER'],
 });
 

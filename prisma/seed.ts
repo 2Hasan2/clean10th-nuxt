@@ -124,7 +124,7 @@ async function seed() {
           name,
           email: faker.internet.email(),
           password: faker.internet.password(),
-          role: faker.helpers.arrayElement(['USER', 'CASHIER', 'ACCOUNTANT']),
+          role: faker.helpers.arrayElement(['CASHIER', 'ACCOUNTANT']),
         },
       });
     })

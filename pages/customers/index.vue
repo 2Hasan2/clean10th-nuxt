@@ -6,6 +6,8 @@ definePageMeta({
     icon: 'heroicons-outline:user-group',
   },
   requiresAuth: true,
+  middleware: ['role'],
+  role: ['CASHIER'],
 });
 
 const columns = [
@@ -24,10 +26,10 @@ const columns = [
     label: 'Phone',
     sortable: true,
   },
-  {
-    key: 'actions',
-    label: 'Actions',
-  },
+  // {
+  //   key: 'actions',
+  //   label: 'Actions',
+  // },
 ];
 
 const name = ref('');
@@ -86,8 +88,8 @@ const deleteCustomer = async (customer: any) => {
   }
 };
 
-const items = (row: any) => [
-  [
+const items = (row: any) => {
+  const actions = [
     {
       label: 'View',
       icon: 'i-heroicons-eye-20-solid',
@@ -97,14 +99,20 @@ const items = (row: any) => [
       label: 'Edit',
       icon: 'i-heroicons-pencil-square-20-solid',
       click: () => navigateTo(`/customers/${row.id}/edit`),
-    },
-    {
+    }
+  ];
+  const { $user } = useNuxtApp()
+
+  if ($user && $user.role === 'ADMIN') {
+    actions.push({
       label: 'Delete',
       icon: 'i-heroicons-trash-20-solid',
       click: () => deleteCustomer(row),
-    },
-  ],
-];
+    });
+  }
+
+  return [actions];
+};
 </script>
 
 <template>

@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
     if (!user) {
       setResponseStatus(event, 401);
       return {
-        error: "Invalid credentials",
+        error: "Email not found",
       };
     }
 

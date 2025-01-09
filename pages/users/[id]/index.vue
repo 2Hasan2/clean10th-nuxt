@@ -5,6 +5,7 @@ definePageMeta({
     icon: 'catppuccin:folder-admin'
   },
   requiresAuth: true,
+  middleware: ['role'],
 });
 
 
@@ -20,7 +21,7 @@ const user = ref<Partial<Users>>({
   id: '',
   email: '',
   name: '',
-  role: 'USER',
+  role: 'CASHIER',
   createdAt: new Date(),
   updatedAt: new Date(),
 });
