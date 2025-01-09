@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import debounce from 'lodash/debounce';
+import { printReceipt as printReceiptUtil } from '~/utils/receipt';
 
 definePageMeta({
   breadcrumb: {
@@ -56,7 +57,8 @@ const name = ref<string>();
 const loading = ref(true);
 const checkoutLoading = ref(false);
 const costumers = ref<Costumer[]>([]);
-const selectedCostumers = ref<Costumer>()
+const shouldPrintReceipt = ref(true);
+const selectedCostumers = ref<Costumer>();
 
 const fetchProducts = async () => {
   loading.value = true;
@@ -131,6 +133,15 @@ const checkout = async () => {
       timeout: 2000,
       color: "green"
     });
+
+    if (shouldPrintReceipt.value) {
+      printReceiptUtil({
+        customer: selectedCostumers.value,
+        cart: cart.value,
+        totalPrice: parseFloat(totalPrice.value),
+      });
+    }
+
     cart.value.forEach(item => {
       const product = productPagenation.value.products.find(product => product.id === item.id);
       if (product && product.stock) {
@@ -139,6 +150,7 @@ const checkout = async () => {
     });
     cart.value = [];
   } catch (error) {
+    console.log(error);
     toast.add({
       title: (error as any)?.data?.error || 'There was an error processing your order',
       timeout: 2000,
@@ -217,7 +229,8 @@ watch(name, debouncedFetchProducts);
 
               <span class="flex gap-2">
                 <UInput v-model="item.quantity" :ui="{ base: 'w-16' }" type="number" min="1" :max="item.stock?.quantity"
-                  :color="item.quantity > (item.stock?.quantity ?? 0) ? 'red' : 'white'" :disabled="checkoutLoading" /> x
+                  :color="item.quantity > (item.stock?.quantity ?? 0) ? 'red' : 'white'" :disabled="checkoutLoading" />
+                x
                 <span>
                   ${{ item.price }}
                 </span>
@@ -245,8 +258,13 @@ watch(name, debouncedFetchProducts);
           <UButton @click="checkout" :disabled="cart.length === 0 || checkoutLoading" :loading="checkoutLoading">
             Checkout
           </UButton>
+          <div class="flex items-center gap-2">
+            <UCheckbox v-model="shouldPrintReceipt" />
+            <span>Print receipt</span>
+          </div>
         </div>
       </div>
     </UCard>
   </div>
+  <Receipt :cart="cart" :customer="selectedCostumers || { name: 'Unknown' }" :totalPrice="parseFloat(totalPrice)" />
 </template>
