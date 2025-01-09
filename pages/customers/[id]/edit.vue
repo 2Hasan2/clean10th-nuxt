@@ -6,7 +6,7 @@ definePageMeta({
     },
     requiresAuth: true,
     middleware: ['role'],
-    role: ['CASHIER'],
+    role: [],
 });
 </script>
 

@@ -47,7 +47,7 @@ async function fetchUser() {
   } catch (error) {
     toast.add({
       title: 'Error fetching user',
-      description: error.message,
+      description: (error as any)?.data?.error || (error as any)?.message,
       color: 'red',
     });
   } finally {
@@ -78,7 +78,7 @@ async function deleteUser(userId: string) {
   } catch (error) {
     toast.add({
       title: 'Error deleting user',
-      description: error.message,
+      description: (error as any)?.data?.error || (error as any)?.message,
       color: 'red',
     });
   } finally {

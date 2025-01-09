@@ -58,7 +58,7 @@ async function fetchOrder() {
     } catch (error) {
         toast.add({
             title: 'Error fetching order',
-            description: error.message,
+            description: (error as any)?.data?.error || (error as any)?.message,
             color: 'red',
         });
     } finally {
@@ -89,7 +89,7 @@ async function deleteOrder(id: string) {
     } catch (error) {
         toast.add({
             title: 'Error deleting order',
-            description: error.message,
+            description: (error as any)?.data?.error || (error as any)?.message,
             color: 'red',
         });
     } finally {

@@ -11,9 +11,12 @@ definePageMeta({
 const customer = ref<any | null>(null);
 
 const route = useRoute()
+const loading = ref(true)
 const router = useRouter()
+const toast = useToast()
 
 const fetchCustomer = async () => {
+    loading.value = true;
     try {
         const res = await $fetch(`/api/customers/${route.params.id}`);
         if ('error' in res) {
@@ -23,6 +26,13 @@ const fetchCustomer = async () => {
         customer.value = res
     } catch (error) {
         console.error(error);
+        toast.add({
+            title: 'Error fetching customer',
+            description: (error as any)?.data?.error || (error as any)?.message,
+            color: 'red',
+        });
+    } finally {
+        loading.value = false;
     }
 };
 const deleteCustomer = async (id: string) => {
@@ -44,7 +54,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="flex flex-col" v-if="customer">
+    <div class="flex flex-col" v-if="!loading && customer">
         <UCard :ui="{ padding: 'p-4', background: 'bg-white dark:bg-gray-800', }">
             <div class="flex flex-col gap-4">
                 <div class="flex justify-between items-center">
@@ -96,7 +106,7 @@ onMounted(() => {
             </div>
         </UCard>
     </div>
-    <div v-else>
+    <div v-else-if="loading">
         <UCard :ui="{ padding: 'p-4', background: 'bg-white dark:bg-gray-700', }">
             <div class="flex flex-col gap-4">
                 <div class="flex justify-between items-center">
