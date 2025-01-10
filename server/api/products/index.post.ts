@@ -4,12 +4,12 @@ export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event);
 
-    const { name, description, price, image, categoryId } = body;
+    const { name, upc, description, price, image, categoryId } = body;
 
-    if (!name || !price || !categoryId) {
+    if (!name || !price || !categoryId || !upc) {
       setResponseStatus(event, 400);
       return {
-        error: "Name, price, and categoryId are required",
+        error: "Name, price, categoryId, and upc are required",
       };
     }
 
@@ -27,17 +27,24 @@ export default defineEventHandler(async (event) => {
       };
     }
 
-    // Check if the name is already in use
+    // Check if the name is already in use or upc is already in use
     const existingProduct = await prisma.product.findFirst({
       where: {
-        name,
+        OR: [
+          {
+            name,
+          },
+          {
+            upc,
+          },
+        ],
       },
     });
 
     if (existingProduct) {
       setResponseStatus(event, 400);
       return {
-        error: "Product name is already in use",
+        error: "Product name or UPC already in use",
       };
     }
 
@@ -45,6 +52,7 @@ export default defineEventHandler(async (event) => {
     const newProduct = await prisma.product.create({
       data: {
         name,
+        upc,
         description,
         price,
         image,

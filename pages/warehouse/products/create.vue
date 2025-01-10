@@ -16,6 +16,7 @@ import { ref, watch } from 'vue'
 // Define validation schema
 const schema = object({
   name: string().required("Required").min(3, "Too short").max(255, "Too long"),
+  upc: string().required("Required").min(3, "Too short").max(255, "Too long"),
   description: string().max(255, "Too long").optional(),
   price: number().positive().min(0, "Too low").default(0),
   categoryId: string().required("Required"),
@@ -25,6 +26,7 @@ type Schema = InferType<typeof schema>
 
 const state = reactive({
   name: '',
+  upc: '',
   description: '',
   categoryId: '',
   price: 0,
@@ -105,8 +107,12 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       <UInput v-model="state.name" placeholder="Enter product's name" />
     </UFormGroup>
 
-    <UFormGroup label="Description" name="description">
+    <UFormGroup label="Description" name="description (optional)">
       <UTextarea v-model="state.description" placeholder="Enter product's description" />
+    </UFormGroup>
+
+    <UFormGroup label="UPC" name="upc">
+      <UInput v-model="state.upc" placeholder="Enter product's UPC" />
     </UFormGroup>
 
     <UFormGroup label="Price" name="price">
