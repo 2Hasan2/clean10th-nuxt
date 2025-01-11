@@ -18,8 +18,9 @@ const loading = ref(false);
 const toast = useToast();
 const router = useRouter();
 const auth = useAuthStore();
+const { $user } = useNuxtApp();
 
-if (auth.isAuthenticated) {
+if (auth.isAuthenticated && $user) {
     router.push('/')
 }
 
@@ -43,7 +44,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             title: 'User logged in',
             timeout: 1000,
         })
-        window.location.reload()
     } catch (error) {
         toast.add({
             title: 'Error logging in',
@@ -54,8 +54,6 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         loading.value = false
     }
 }
-
-
 
 </script>
 
