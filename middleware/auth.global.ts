@@ -9,6 +9,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
   }
 
   if (!auth.isAuthenticated && to.meta.requiresAuth) {
+    console.log("fuck");
     return navigateTo('/login');
   }
 });

@@ -152,7 +152,6 @@ const checkout = async () => {
     });
     cart.value = [];
   } catch (error) {
-    console.log(error);
     toast.add({
       title: (error as any)?.data?.error || 'There was an error processing your order',
       timeout: 2000,

@@ -44,6 +44,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
             title: 'User logged in',
             timeout: 1000,
         })
+        router.push('/')
     } catch (error) {
         toast.add({
             title: 'Error logging in',
