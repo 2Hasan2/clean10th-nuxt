@@ -33,8 +33,6 @@ export const useAuthStore = defineStore('auth', {
         const cookie = useCookie('auth_token');
         cookie.value = response.token;
 
-        navigateTo('/');
-
         return response;
       } catch (error) {
         throw new Error((error as any)?.data?.error || 'Login failed');
