@@ -187,7 +187,7 @@ watch(name, debouncedFetchProducts);
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
           <div class="min-w-32 p-1" v-for="product in productPagenation.products" :key="product.id"
             :class="{ 'opacity-50': product.stock && product.stock.quantity <= (cart.find(item => item.id === product.id)?.quantity ?? 0) }">
-            <UTooltip class="flex flex-col gap-2 p-2 border border-gray-800 rounded"
+            <UTooltip class="flex flex-col gap-2 p-2 border dark:border-gray-800 rounded"
               :text="`${product.name} ${product.stock?.quantity}`"
               :ui="{ base: 'flex items-center p-2 text-md h-full' }" :popper="{ placement: 'right', arrow: true }">
               <!-- <img :src="`${product.image}`" class="w-full h-32 object-cover" /> -->
@@ -224,7 +224,7 @@ watch(name, debouncedFetchProducts);
         <div class="flex flex-col gap-2 h-full overflow-y-auto pb-2">
           <span class="text-lg">Cart</span>
           <div class="flex flex-col gap-4">
-            <div class="flex justify-between gap-2 items-center border rounded border-gray-800 p-2" v-for="item in cart"
+            <div class="flex justify-between gap-2 items-center border rounded dark:border-gray-800 p-2" v-for="item in cart"
               :key="item.id">
               <span>{{ item.name }}</span>
 
