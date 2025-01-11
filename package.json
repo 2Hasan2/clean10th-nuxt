@@ -1,7 +1,6 @@
 {
   "name": "nuxt-app",
   "private": true,
-  "type": "module",
   "scripts": {
     "build": "npx prisma migrate deploy && npx prisma generate && nuxt build",
     "dev": "nuxt dev",
