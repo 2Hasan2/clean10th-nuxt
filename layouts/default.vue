@@ -82,7 +82,7 @@ links_vertical.value = links_vertical.value.map((links) => {
 </script>
 
 <template>
-  <UContainer class="flex flex-row gap-4 h-screen">
+  <div class="flex flex-row gap-4 h-screen">
     <UCard
       class="w-fit"
       :ui="{
@@ -144,6 +144,6 @@ links_vertical.value = links_vertical.value.map((links) => {
         <slot />
       </UCard>
     </div>
-  </UContainer>
+  </div>
   <SpeedInsights />
 </template>
