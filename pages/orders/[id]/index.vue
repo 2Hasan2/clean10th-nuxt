@@ -212,7 +212,7 @@ onMounted(() => {
                         <ULink
                           active-class="text-primary-800"
                           inactive-class="text-primary-500 dark:text-primary-400 hover:text-gray-700 dark:hover:text-gray-200"
-                          :to="`warehouse/products/${item.product.id}`"
+                          :to="`/warehouse/products/${item.product.id}`"
                         >
                           {{ item.product.name }}
                         </ULink>
