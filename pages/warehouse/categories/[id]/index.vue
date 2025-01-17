@@ -29,16 +29,19 @@ const fetchCategory = async () => {
       ...res,
       createdAt: new Date(res.createdAt),
       updatedAt: new Date(res.updatedAt),
+      deletedAt: res.deletedAt ? new Date(res.deletedAt) : null,
       products: res.products.map((product) => ({
         ...product,
         createdAt: new Date(product.createdAt),
         updatedAt: new Date(product.updatedAt),
+        deletedAt: product.deletedAt ? new Date(product.deletedAt) : null,
       })),
       parent: res.parent
         ? {
             ...res.parent,
             createdAt: new Date(res.parent.createdAt),
             updatedAt: new Date(res.parent.updatedAt),
+            deletedAt: res.parent.deletedAt ? new Date(res.parent.deletedAt) : null,
           }
         : null,
     };

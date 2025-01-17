@@ -103,7 +103,7 @@ const items = (row: any) => {
   ];
   const { $user } = useNuxtApp();
 
-  if ($user && $user.value.role === "ADMIN") {
+  if ($user && $user.value?.role === "ADMIN") {
     actions.push({
       label: "Delete",
       icon: "i-heroicons-trash-20-solid",

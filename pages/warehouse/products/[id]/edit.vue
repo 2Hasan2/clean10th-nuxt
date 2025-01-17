@@ -32,11 +32,15 @@ const loading = ref(true);
 const productId = useRoute().params.id as string;
 
 onMounted(async () => {
-    if (productId) {
-      loading.value = true;
+  if (productId) {
+    loading.value = true;
     try {
       const response = await $fetch(`/api/products/${productId}`);
-      const product = response as { name: string; description: string };
+      const product = response as {
+        name: string;
+        description: string;
+        price: number;
+      };
       state.name = product.name;
       state.description = product.description;
       state.price = product.price;
@@ -50,7 +54,6 @@ onMounted(async () => {
       loading.value = false;
     }
   }
-
 });
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {

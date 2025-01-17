@@ -87,7 +87,7 @@ onMounted(() => {
               @click="deleteCustomer(customer.id)"
               color="red"
               class="ml-2"
-              v-if="$user.value.role === 'ADMIN'"
+              v-if="$user.value?.role === 'ADMIN'"
             >
               Delete
             </UButton>

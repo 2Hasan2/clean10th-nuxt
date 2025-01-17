@@ -160,7 +160,7 @@ onMounted(() => {
               Print
             </UButton>
             <UButton
-              @click="deleteOrder(order!)"
+              @click="deleteOrder(order as Order)"
               color="red"
               v-if="$user.value?.role === 'ADMIN'"
             >

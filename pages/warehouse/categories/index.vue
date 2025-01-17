@@ -28,7 +28,7 @@ const columns = [
 ];
 const { $user } = useNuxtApp();
 
-if ($user.value.role === "ADMIN") {
+if ($user.value?.role === "ADMIN") {
   columns.push({
     key: "actions",
     label: "Actions",
