@@ -1,13 +1,19 @@
 <script setup lang="ts">
-import { Analytics } from '@vercel/analytics/nuxt'
-import { SpeedInsights } from "@vercel/speed-insights/nuxt"
+import { Analytics } from "@vercel/analytics/nuxt";
 </script>
+
 <template>
+  <!-- layout -->
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
+
+  <!-- popups -->
   <UNotifications />
   <UModals />
+
+  <!-- plugins -->
+  <VitePwaManifest />
   <Analytics />
-  <SpeedInsights />
+  <NuxtPath />
 </template>
