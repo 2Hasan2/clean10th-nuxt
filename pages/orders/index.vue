@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import debounce from "lodash/debounce";
-import { sub, add, format, isSameDay, type Duration } from 'date-fns'
-import type { Order, orderItem, Customer, Product } from "@prisma/client"
-import { ConfirmModel } from '#components'
+import { sub, add, format, isSameDay, type Duration } from "date-fns";
+import type { Order, orderItem, Customer, Product } from "@prisma/client";
+import { ConfirmModel } from "#components";
 
 const toast = useToast();
 definePageMeta({
@@ -11,8 +11,8 @@ definePageMeta({
     icon: "catppuccin:folder-scripts",
   },
   requiresAuth: true,
-  middleware: ['role'],
-  role: ['ACCOUNTANT', 'CASHIER'],
+  middleware: ["role"],
+  role: ["ACCOUNTANT", "CASHIER"],
 });
 
 const columns = [
@@ -38,19 +38,21 @@ const columns = [
 ];
 
 const customerName = ref("");
-const rangeDate = ref({ start: sub(new Date(), { days: 1 }), end: new Date() })
+const rangeDate = ref({ start: sub(new Date(), { days: 1 }), end: new Date() });
 
 const page = ref(1);
 const limit = ref(20);
 const sortBy = ref("createdAt");
 const sortOrder = ref("desc");
 const loading = ref(true);
-const orders = ref<(Order & {
-  orderItem: (orderItem & {
-    product: Product
-  })[],
-  customer: Customer
-})[]>([]);
+const orders = ref<
+  (Order & {
+    orderItem: (orderItem & {
+      product: Product;
+    })[];
+    customer: Customer;
+  })[]
+>([]);
 const totalCount = ref(0);
 const totalPrice = ref(0);
 const totalPages = ref(0);
@@ -96,13 +98,11 @@ const fetchOrders = async () => {
     totalPages.value = response.totalPages;
   } catch (error) {
     console.error("Error fetching orders:", error);
-    toast.add(
-      {
-        title: "Error fetching orders",
-        timeout: 1000,
-        color: "red"
-      }
-    );
+    toast.add({
+      title: "Error fetching orders",
+      timeout: 1000,
+      color: "red",
+    });
   } finally {
     loading.value = false;
   }
@@ -110,16 +110,13 @@ const fetchOrders = async () => {
 
 const debouncedFetchOrders = debounce(fetchOrders, 300);
 
-watch(
-  [customerName, rangeDate],
-  debouncedFetchOrders
-);
+watch([customerName, rangeDate], debouncedFetchOrders);
 
 watch([page, limit, sortBy, sortOrder], fetchOrders);
 
 onMounted(fetchOrders);
 
-const modal = useModal()
+const modal = useModal();
 
 const deleteOrder = async (order: Order) => {
   modal.open(ConfirmModel, {
@@ -149,54 +146,88 @@ const deleteOrder = async (order: Order) => {
   });
 };
 
-
-const ranges: { label: string, duration: Duration & { start?: Date } }[] = [
-  { label: 'Today', duration: { days: 1 } },
+const ranges: { label: string; duration: Duration & { start?: Date } }[] = [
+  { label: "Today", duration: { days: 1 } },
   {
-    label: 'This Week', duration: {
-      days: 7, start: new Date(new Date().setDate(new Date().getDate() - new Date().getDay()))
-    }
+    label: "This Week",
+    duration: {
+      days: 7,
+      start: new Date(
+        new Date().setDate(new Date().getDate() - new Date().getDay())
+      ),
+    },
   },
   {
-    label: 'This Month', duration: {
-      months: 1, start: new Date(new Date().getFullYear(), new Date().getMonth(), 1)
-    }
+    label: "This Month",
+    duration: {
+      months: 1,
+      start: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+    },
   },
   {
-    label: 'This Year', duration: {
-      years: 1, start: new Date(new Date().getFullYear(), 0, 1)
-    }
+    label: "This Year",
+    duration: {
+      years: 1,
+      start: new Date(new Date().getFullYear(), 0, 1),
+    },
   },
 ];
 
 function isRangeSelected(duration: Duration & { start?: Date }) {
-  return isSameDay(rangeDate.value.start, sub(duration.start || new Date(), duration)) && isSameDay(rangeDate.value.end, duration.start ? add(duration.start, duration) : new Date());
+  return (
+    isSameDay(
+      rangeDate.value.start,
+      sub(duration.start || new Date(), duration)
+    ) &&
+    isSameDay(
+      rangeDate.value.end,
+      duration.start ? add(duration.start, duration) : new Date()
+    )
+  );
 }
 
 function selectRange(duration: Duration & { start?: Date }) {
-  rangeDate.value = { start: sub(duration.start || new Date(), duration), end: duration.start ? add(duration.start, duration) : new Date() };
+  rangeDate.value = {
+    start: sub(duration.start || new Date(), duration),
+    end: duration.start ? add(duration.start, duration) : new Date(),
+  };
 }
-
-
 </script>
 
 <template>
   <div class="max-h-full flex flex-col justify-between">
     <div class="flex items-center justify-between pb-4">
       <div class="flex gap-2">
-        <UInput v-model="customerName" placeholder="Filter by customer name..." />
+        <UInput
+          v-model="customerName"
+          placeholder="Filter by customer name..."
+        />
         <UPopover>
           <UButton icon="i-heroicons-calendar-days-20-solid">
-            {{ format(rangeDate.start, 'd MMM, yyy') }} - {{ format(rangeDate.end, 'd MMM, yyy') }}
+            {{ format(rangeDate.start, "d MMM, yyy") }} -
+            {{ format(rangeDate.end, "d MMM, yyy") }}
           </UButton>
 
           <template #panel="{ close }">
-            <div class="flex items-center sm:divide-x divide-gray-200 dark:divide-gray-800">
+            <div
+              class="flex items-center sm:divide-x divide-gray-200 dark:divide-gray-800"
+            >
               <div class="hidden sm:flex flex-col py-4">
-                <UButton v-for="(range, index) in ranges" :key="index" :label="range.label" color="gray" variant="ghost"
+                <UButton
+                  v-for="(range, index) in ranges"
+                  :key="index"
+                  :label="range.label"
+                  color="gray"
+                  variant="ghost"
                   class="rounded-none px-6"
-                  :class="[isRangeSelected(range.duration) ? 'bg-gray-100 dark:bg-gray-800' : 'hover:bg-gray-50 dark:hover:bg-gray-800/50']"
-                  truncate @click="selectRange(range.duration)" />
+                  :class="[
+                    isRangeSelected(range.duration)
+                      ? 'bg-gray-100 dark:bg-gray-800'
+                      : 'hover:bg-gray-50 dark:hover:bg-gray-800/50',
+                  ]"
+                  truncate
+                  @click="selectRange(range.duration)"
+                />
               </div>
 
               <DatePicker v-model="rangeDate" @close="close" />
@@ -204,29 +235,47 @@ function selectRange(duration: Duration & { start?: Date }) {
           </template>
         </UPopover>
         <!-- reload -->
-        <UButton :loading="loading"
+        <UButton
+          :loading="loading"
           icon="streamline:interface-arrows-synchronize-arrows-loading-load-sync-synchronize-arrow-reload"
-          @click="fetchOrders" />
+          @click="fetchOrders"
+        />
       </div>
       <div class="flex text-2xl gap-2">
         <span>count:</span>
-        <UBadge color="green" size="md" variant="subtle">{{ totalCount }}</UBadge>
+        <UBadge color="green" size="md" variant="subtle">{{
+          totalCount
+        }}</UBadge>
       </div>
       <div class="flex text-2xl gap-2">
         <span>total:</span>
-        <UBadge color="green" size="md" variant="subtle">${{ totalPrice }}</UBadge>
+        <UBadge color="green" size="md" variant="subtle"
+          >${{ totalPrice }}</UBadge
+        >
       </div>
     </div>
 
-    <UTable :loading="loading" :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Loading...' }"
-      :progress="{ color: 'primary', animation: 'carousel' }" :rows="orders" :columns="columns" :ui="{
+    <UTable
+      :loading="loading"
+      :loading-state="{
+        icon: 'i-heroicons-arrow-path-20-solid',
+        label: 'Loading...',
+      }"
+      :progress="{ color: 'primary', animation: 'carousel' }"
+      :rows="orders"
+      :columns="columns"
+      :ui="{
         base: 'min-w-full table-fixed max-h-fit',
         thead: 'sticky w-full top-0 bg-white dark:bg-gray-800',
         tbody: 'divide-y divide-gray-200 dark:divide-gray-800',
-      }">
+      }"
+    >
       <template #customerName-data="{ row }">
-        <ULink :to="`/customers/${row.id}`" active-class="text-primary-800"
-          inactive-class="text-primary-500 dark:text-primary-400 hover:text-gray-700 dark:hover:text-gray-200">
+        <ULink
+          :to="`/customers/${row.id}`"
+          active-class="text-primary-800"
+          inactive-class="text-primary-500 dark:text-primary-400 hover:text-gray-700 dark:hover:text-gray-200"
+        >
           {{ row.customer.name }}
         </ULink>
       </template>
@@ -241,13 +290,15 @@ function selectRange(duration: Duration & { start?: Date }) {
 
       <template #actions-data="{ row }">
         <UButtonGroup>
-          <UButton @click="navigateTo(`/orders/${row.id}`)">
-            View
-          </UButton>
+          <UButton @click="navigateTo(`/orders/${row.id}`)"> View </UButton>
           <!-- <UButton color="blue" @click="navigateTo(`/orders/${row.id}/edit`)">
             Edit
           </UButton> -->
-          <UButton color="red" @click="deleteOrder(row)" v-if="$user.role === 'ADMIN'">
+          <UButton
+            color="red"
+            @click="deleteOrder(row)"
+            v-if="$user.value?.role === 'ADMIN'"
+          >
             Delete
           </UButton>
         </UButtonGroup>
@@ -261,7 +312,9 @@ function selectRange(duration: Duration & { start?: Date }) {
     </UTable>
 
     <!-- Pagination -->
-    <div class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
+    <div
+      class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700"
+    >
       <UPagination v-model="page" :page-count="limit" :total="totalCount" />
     </div>
   </div>

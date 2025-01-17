@@ -1,16 +1,15 @@
 <script setup lang="ts">
 definePageMeta({
   breadcrumb: {
-    label: 'Users',
-    icon: 'catppuccin:folder-admin'
+    label: "Users",
+    icon: "catppuccin:folder-admin",
   },
   requiresAuth: true,
-  middleware: ['role'],
+  middleware: ["role"],
 });
 
-
-import { useRoute, useRouter } from 'vue-router';
-import type { Users } from '@prisma/client';
+import { useRoute, useRouter } from "vue-router";
+import type { Users } from "@prisma/client";
 
 const route = useRoute();
 const router = useRouter();
@@ -18,10 +17,10 @@ const toast = useToast();
 
 const loading = ref(true);
 const user = ref<Partial<Users>>({
-  id: '',
-  email: '',
-  name: '',
-  role: 'CASHIER',
+  id: "",
+  email: "",
+  name: "",
+  role: "CASHIER",
   createdAt: new Date(),
   updatedAt: new Date(),
 });
@@ -31,11 +30,11 @@ async function fetchUser() {
   loading.value = true;
   try {
     const response = await $fetch(`/api/users/${userId}`);
-    if ('error' in response) {
+    if ("error" in response) {
       toast.add({
-        title: 'Error fetching user',
+        title: "Error fetching user",
         description: response.error,
-        color: 'red',
+        color: "red",
       });
       return;
     }
@@ -46,9 +45,9 @@ async function fetchUser() {
     };
   } catch (error) {
     toast.add({
-      title: 'Error fetching user',
+      title: "Error fetching user",
       description: (error as any)?.data?.error || (error as any)?.message,
-      color: 'red',
+      color: "red",
     });
   } finally {
     loading.value = false;
@@ -59,27 +58,27 @@ async function deleteUser(userId: string) {
   loading.value = true;
   try {
     const response = await $fetch(`/api/users/${userId}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
-    if ('error' in response) {
+    if ("error" in response) {
       toast.add({
-        title: 'Error deleting user',
+        title: "Error deleting user",
         description: response.error,
-        color: 'red',
+        color: "red",
       });
       return;
     }
     toast.add({
-      title: 'User deleted',
-      description: 'User has been deleted successfully',
-      color: 'green',
+      title: "User deleted",
+      description: "User has been deleted successfully",
+      color: "green",
     });
-    router.push('/users');
+    router.push("/users");
   } catch (error) {
     toast.add({
-      title: 'Error deleting user',
+      title: "Error deleting user",
       description: (error as any)?.data?.error || (error as any)?.message,
-      color: 'red',
+      color: "red",
     });
   } finally {
     loading.value = false;
@@ -93,7 +92,7 @@ onMounted(() => {
 
 <template>
   <div class="flex flex-col" v-if="user.id">
-    <UCard :ui="{ padding: 'p-4', background: 'bg-white dark:bg-gray-800', }">
+    <UCard :ui="{ padding: 'p-4', background: 'bg-white dark:bg-gray-800' }">
       <div class="flex flex-col gap-4">
         <div class="flex justify-between items-center">
           <div class="flex flex-col space-y-2">
@@ -101,9 +100,7 @@ onMounted(() => {
               <h1 class="text-2xl font-bold">
                 {{ user.name }}
               </h1>
-              <span class="text-sm text-gray-600">
-                ID: {{ user.id }}
-              </span>
+              <span class="text-sm text-gray-600"> ID: {{ user.id }} </span>
             </div>
           </div>
           <div class="flex items-center">
@@ -112,9 +109,7 @@ onMounted(() => {
             </span>
           </div>
           <div class="flex items-center">
-            <UButton :to="`/users/${user.id}/edit`">
-              Edit
-            </UButton>
+            <UButton :to="`/users/${user.id}/edit`"> Edit </UButton>
             <UButton @click="deleteUser(user.id)" color="red" class="ml-2">
               Delete
             </UButton>
@@ -122,13 +117,19 @@ onMounted(() => {
         </div>
         <div class="flex flex-col gap-2">
           <div class="flex items-center space-x-2">
-            <UIcon name="fluent-emoji-flat:eight-oclock" class="w-5 h-5 text-gray-400" />
+            <UIcon
+              name="fluent-emoji-flat:eight-oclock"
+              class="w-5 h-5 text-gray-400"
+            />
             <span class="text-gray-400">
               Created At: {{ user.createdAt }}
             </span>
           </div>
           <div class="flex items-center space-x-2">
-            <UIcon name="fluent-emoji-flat:ten-oclock" class="w-5 h-5 text-gray-400" />
+            <UIcon
+              name="fluent-emoji-flat:ten-oclock"
+              class="w-5 h-5 text-gray-400"
+            />
             <span class="text-gray-400">
               Updated At: {{ user.updatedAt }}
             </span>
@@ -138,7 +139,7 @@ onMounted(() => {
     </UCard>
   </div>
   <div v-else>
-    <UCard :ui="{ padding: 'p-4', background: 'bg-white dark:bg-gray-700', }">
+    <UCard :ui="{ padding: 'p-4', background: 'bg-white dark:bg-gray-700' }">
       <div class="flex flex-col gap-4">
         <div class="flex justify-between items-center">
           <div class="flex flex-col space-y-2">

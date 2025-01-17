@@ -1,59 +1,59 @@
 import { PrismaClient, Role } from '@prisma/client';
 import { faker } from '@faker-js/faker';
-// import { hash } from "bcryptjs";
+import { hash } from "bcryptjs";
 
 
 const prisma = new PrismaClient();
 
 async function seed() {
-  const categoryNames = new Set<string>();
-  const categories = await Promise.all(
-    Array.from({ length: 7 }).map(() => {
-      let name = faker.commerce.department();
+  // const categoryNames = new Set<string>();
+  // const categories = await Promise.all(
+  //   Array.from({ length: 7 }).map(() => {
+  //     let name = faker.commerce.department();
       
-      while (categoryNames.has(name)) {
-        name = faker.commerce.department();
-      }
+  //     while (categoryNames.has(name)) {
+  //       name = faker.commerce.department();
+  //     }
       
-      categoryNames.add(name);
+  //     categoryNames.add(name);
 
-      return prisma.category.create({
-        data: {
-          name,
-          description: faker.commerce.productDescription(),
-        },
-      });
-    })
-  );
+  //     return prisma.category.create({
+  //       data: {
+  //         name,
+  //         description: faker.commerce.productDescription(),
+  //       },
+  //     });
+  //   })
+  // );
 
-  const productNames = new Set<string>();
-  const products = await Promise.all(
-    Array.from({ length: 50 }).map(() => {
-      let name = faker.commerce.productName();
+  // const productNames = new Set<string>();
+  // const products = await Promise.all(
+  //   Array.from({ length: 50 }).map(() => {
+  //     let name = faker.commerce.productName();
       
-      while (productNames.has(name)) {
-        name = faker.commerce.productName();
-      }
+  //     while (productNames.has(name)) {
+  //       name = faker.commerce.productName();
+  //     }
       
-      productNames.add(name);
+  //     productNames.add(name);
 
-      return prisma.product.create({
-        data: {
-          name,
-          description: faker.commerce.productDescription(),
-          price: parseFloat(faker.commerce.price()),
-          image: faker.image.url(),
-          categoryId: categories[Math.floor(Math.random() * categories.length)].id,
-          upc: faker.commerce.isbn(),
-          stock:{
-            create: {
-              quantity: faker.number.int({ min: 0, max: 999_999 }),
-            },
-          }
-        },
-      });
-    })
-  );
+  //     return prisma.product.create({
+  //       data: {
+  //         name,
+  //         description: faker.commerce.productDescription(),
+  //         price: parseFloat(faker.commerce.price()),
+  //         image: faker.image.url(),
+  //         categoryId: categories[Math.floor(Math.random() * categories.length)].id,
+  //         upc: faker.commerce.isbn(),
+  //         stock:{
+  //           create: {
+  //             quantity: faker.number.int({ min: 0, max: 999_999 }),
+  //           },
+  //         }
+  //       },
+  //     });
+  //   })
+  // );
 
   // Create customers
   // const customerNames = new Set<string>();
@@ -134,16 +134,16 @@ async function seed() {
   // );
 
   // create user
-  // const user: { name: string; email: string; password: string; role: Role } = {
-  //   name: 'Hasan Ragab',
-  //   email: 'hr145310@gmail.com',
-  //   password: await hash('hasan2003', 10),
-  //   role: 'ADMIN',
-  // }
+  const user: { name: string; email: string; password: string; role: Role } = {
+    name: 'Hasan Ragab',
+    email: 'hr145310@gmail.com',
+    password: await hash('hasan2003', 10),
+    role: 'ADMIN',
+  }
 
-  // await prisma.users.create({
-  //   data: user,
-  // });
+  await prisma.users.create({
+    data: user,
+  });
 
   console.log('Seeding completed.');
 }

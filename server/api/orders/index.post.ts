@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Collect all product IDs from items
-    const productIds = items.map(item => item.productId);
+    const productIds = items.map((item) => item.productId);
 
     // Fetch all products and stock information at once
     const [products, stocks] = await prisma.$transaction([
@@ -40,8 +40,10 @@ export default defineEventHandler(async (event) => {
     ]);
 
     // Create a map of products and stock for quick lookup
-    const productMap = new Map(products.map(product => [product.id, product]));
-    const stockMap = new Map(stocks.map(stock => [stock.productId, stock]));
+    const productMap = new Map(
+      products.map((product) => [product.id, product])
+    );
+    const stockMap = new Map(stocks.map((stock) => [stock.productId, stock]));
 
     let total = 0;
     const orderItems = [];
@@ -63,11 +65,15 @@ export default defineEventHandler(async (event) => {
       if (!stock || stock.quantity < quantity) {
         setResponseStatus(event, 400);
         return {
-          error: `Not enough stock for ${product.name}, ${stock && stock.quantity > 0 ? `only ${stock.quantity} available` : "out of stock"}`,
+          error: `Not enough stock for ${product.name}, ${
+            stock && stock.quantity > 0
+              ? `only ${stock.quantity} available`
+              : "out of stock"
+          }`,
         };
       }
 
-      const itemPrice = product.price * quantity;
+      const itemPrice = product.price;
       total += itemPrice;
 
       orderItems.push({
@@ -95,13 +101,13 @@ export default defineEventHandler(async (event) => {
     });
 
     // Update stock quantities in bulk (reduce stock in one call)
-    const stockUpdates = stocks.map(stock => ({
+    const stockUpdates = stocks.map((stock) => ({
       where: { productId: stock.productId },
       data: { quantity: stock.quantity },
     }));
 
     await prisma.$transaction(
-      stockUpdates.map(update => prisma.stock.update(update))
+      stockUpdates.map((update) => prisma.stock.update(update))
     );
 
     return newOrder;

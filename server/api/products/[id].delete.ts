@@ -26,8 +26,16 @@ export default defineEventHandler(async (event) => {
     }
 
     // Delete the product
-    await prisma.product.delete({
+    await prisma.product.update({
       where: { id },
+      data: {
+        deletedAt: new Date(),
+        stock: {
+          update: {
+            quantity: 0,
+          },
+        },
+      },
     });
 
     return { message: "Product deleted successfully" };

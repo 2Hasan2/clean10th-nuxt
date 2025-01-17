@@ -1,24 +1,24 @@
 <script setup lang="ts">
-import debounce from 'lodash/debounce';
+import debounce from "lodash/debounce";
 definePageMeta({
   breadcrumb: {
-    label: 'Categories',
-    icon: 'catppuccin:taskfile',
+    label: "Categories",
+    icon: "catppuccin:taskfile",
   },
   requiresAuth: true,
-  middleware: ['role'],
-  role: ['CASHIER', 'ACCOUNTANT'],
+  middleware: ["role"],
+  role: ["CASHIER", "ACCOUNTANT"],
 });
 
 const columns = [
   {
-    key: 'name',
-    label: 'Name',
+    key: "name",
+    label: "Name",
     sortable: true,
   },
   {
-    key: 'description',
-    label: 'Description',
+    key: "description",
+    label: "Description",
     sortable: true,
   },
   // {
@@ -26,22 +26,22 @@ const columns = [
   //   label: 'Actions',
   // },
 ];
-const { $user } = useNuxtApp()
+const { $user } = useNuxtApp();
 
-if ($user.role === 'ADMIN') {
+if ($user.value.role === "ADMIN") {
   columns.push({
-    key: 'actions',
-    label: 'Actions',
+    key: "actions",
+    label: "Actions",
     sortable: false,
   });
 }
 
-const name = ref('');
-const description = ref('');
+const name = ref("");
+const description = ref("");
 const page = ref(1);
 const limit = ref(5);
-const sortBy = ref('name');
-const sortOrder = ref('asc');
+const sortBy = ref("name");
+const sortOrder = ref("asc");
 const loading = ref(true);
 
 const categories = ref<any>([]);
@@ -51,7 +51,7 @@ const totalPages = ref(0);
 const fetchCategories = async () => {
   loading.value = true;
   try {
-    const response = await $fetch('/api/categories', {
+    const response = await $fetch("/api/categories", {
       params: {
         name: name.value,
         description: description.value,
@@ -66,7 +66,7 @@ const fetchCategories = async () => {
     totalCount.value = response.totalCount;
     totalPages.value = response.totalPages;
   } catch (error) {
-    console.error('Error fetching categories:', error);
+    console.error("Error fetching categories:", error);
   } finally {
     loading.value = false;
   }
@@ -84,29 +84,38 @@ const deleteCategory = async (id: string) => {
   if (confirm("Are you sure you want to delete ?")) {
     try {
       await $fetch(`/api/categories/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
       fetchCategories();
     } catch (error) {
-      console.error('Error deleting category:', error);
+      console.error("Error deleting category:", error);
     }
   }
 };
 
 const items = (row: any) => {
   const content = [
-    { label: 'Edit', icon: 'i-heroicons-pencil-square-20-solid', click: () => navigateTo(`/warehouse/categories/${row.id}/edit`), },
-    { label: 'Delete', icon: 'i-heroicons-trash-20-solid', click: () => deleteCategory(row), }
-  ]
+    {
+      label: "Edit",
+      icon: "i-heroicons-pencil-square-20-solid",
+      click: () => navigateTo(`/warehouse/categories/${row.id}/edit`),
+    },
+    {
+      label: "Delete",
+      icon: "i-heroicons-trash-20-solid",
+      click: () => deleteCategory(row),
+    },
+  ];
 
   return [content];
-
-}
+};
 </script>
 
 <template>
   <div>
-    <div class="flex justify-between px-3 py-3.5 border-b border-gray-200 dark:border-gray-700">
+    <div
+      class="flex justify-between px-3 py-3.5 border-b border-gray-200 dark:border-gray-700"
+    >
       <UInput v-model="name" placeholder="Filter categories..." />
       <UButton to="/warehouse/categories/create">
         <template #leading>
@@ -116,17 +125,32 @@ const items = (row: any) => {
       </UButton>
     </div>
 
-    <UTable :loading="loading" :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Loading...' }"
-      :progress="{ color: 'primary', animation: 'carousel' }" :rows="categories" :columns="columns">
+    <UTable
+      :loading="loading"
+      :loading-state="{
+        icon: 'i-heroicons-arrow-path-20-solid',
+        label: 'Loading...',
+      }"
+      :progress="{ color: 'primary', animation: 'carousel' }"
+      :rows="categories"
+      :columns="columns"
+    >
       <template #name-data="{ row }">
-        <ULink :to="`/warehouse/categories/${row.id}`" active-class="text-primary-800"
-          inactive-class="text-primary-500 dark:text-primary-400 hover:text-gray-700 dark:hover:text-gray-200">
+        <ULink
+          :to="`/warehouse/categories/${row.id}`"
+          active-class="text-primary-800"
+          inactive-class="text-primary-500 dark:text-primary-400 hover:text-gray-700 dark:hover:text-gray-200"
+        >
           {{ row.name }}
         </ULink>
       </template>
       <template #actions-data="{ row }">
         <UDropdown :items="items(row)">
-          <UButton color="gray" variant="ghost" icon="i-heroicons-ellipsis-horizontal-20-solid" />
+          <UButton
+            color="gray"
+            variant="ghost"
+            icon="i-heroicons-ellipsis-horizontal-20-solid"
+          />
         </UDropdown>
       </template>
       <template #empty-state>
@@ -136,7 +160,9 @@ const items = (row: any) => {
       </template>
     </UTable>
 
-    <div class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
+    <div
+      class="flex justify-end px-3 py-3.5 border-t border-gray-200 dark:border-gray-700"
+    >
       <UPagination v-model="page" :page-count="limit" :total="totalCount" />
     </div>
   </div>

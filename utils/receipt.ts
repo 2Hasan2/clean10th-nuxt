@@ -1,13 +1,17 @@
 interface CartItem {
-    id: string;
-    name: string;
-    quantity: number;
-    price: number;
+  id: string;
+  name: string;
+  quantity: number;
+  price: number;
 }
 
-const printReceipt = ( props: { cart: CartItem[]; customer: { name: string }; totalPrice: number; }) => {
-    // Create the receipt HTML dynamically
-    const receiptHTML = `
+const printReceipt = (props: {
+  cart: CartItem[];
+  customer: { name: string };
+  totalPrice: number;
+}) => {
+  // Create the receipt HTML dynamically
+  const receiptHTML = `
     <html>
       <head>
         <title>Receipt</title>
@@ -56,45 +60,56 @@ const printReceipt = ( props: { cart: CartItem[]; customer: { name: string }; to
           <table class="receipt-table">
             <thead>
               <tr>
-                <th style="text-align: left;">Item</th>
+                <th style="text-align: center;">Item</th>
                 <th style="text-align: center;">Qty</th>
-                <th style="text-align: right;">Price</th>
+                <th style="text-align: center;">Price</th>
               </tr>
             </thead>
             <tbody>
               ${props.cart
-            .map(
-                (item) => `
+                .map(
+                  (item) => `
                 <tr>
-                  <td>${item.name}</td>
+                  <td style="text-align: center;">${item.name}</td>
                   <td style="text-align: center;">${item.quantity}</td>
-                  <td>${(item.price * item.quantity).toFixed(2)}</td>
+                  <td style="text-align: center;">${(
+                    item.price * item.quantity
+                  ).toFixed(2)}</td>
                 </tr>
               `
-            )
-            .join("")}
+                )
+                .join("")}
             </tbody>
           </table>
           <hr class="receipt-divider" />
-          <div style="text-align: right;">
+          <div style="text-align: center;">
             <strong>Total: $${props.totalPrice.toFixed(2)}</strong>
           </div>
         </div>
+        <br />
+        <br />
+        <button onclick="window.print()">Print</button>
       </body>
     </html>
   `;
 
-    // Open the print window and inject the receipt HTML small
-    const printWindow = window.open("", "_blank", `width=300,height=400,left=${(window.screen.width - 300) / 2},top=${(window.screen.height - 400) / 2}`);
-    if (printWindow) {
-        printWindow.document.write(receiptHTML);
-        printWindow.document.close();
-        printWindow.focus();
-        setTimeout(() => {
-            printWindow.print();
-            printWindow.close();
-        }, 100);
-    }
+  // Open the print window and inject the receipt HTML small
+  const printWindow = window.open(
+    "",
+    "_blank",
+    `width=300,height=400,left=${(window.screen.width - 300) / 2},top=${
+      (window.screen.height - 400) / 2
+    }`
+  );
+  if (printWindow) {
+    printWindow.document.write(receiptHTML);
+    printWindow.document.close();
+    printWindow.focus();
+    // setTimeout(() => {
+    //     printWindow.print();
+    //     printWindow.close();
+    // }, 100);
+  }
 };
 
-export {printReceipt};
+export { printReceipt };

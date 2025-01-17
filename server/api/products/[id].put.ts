@@ -18,7 +18,8 @@ export default defineEventHandler(async (event) => {
     if (!name && !description && !price && !image && !categoryId) {
       setResponseStatus(event, 400);
       return {
-        error: "At least one field (name, description, price, image, categoryId) must be provided for update",
+        error:
+          "At least one field (name, description, price, image, categoryId) must be provided for update",
       };
     }
 
@@ -33,6 +34,7 @@ export default defineEventHandler(async (event) => {
         error: "Product not found",
       };
     }
+    console.log(existingProduct.categoryId);
 
     // Update the product
     const updatedProduct = await prisma.product.update({
