@@ -1,7 +1,6 @@
-import { PrismaClient, Role } from '@prisma/client';
-import { faker } from '@faker-js/faker';
+import { PrismaClient, Role } from "@prisma/client";
+import { faker } from "@faker-js/faker";
 import { hash } from "bcryptjs";
-
 
 const prisma = new PrismaClient();
 
@@ -10,11 +9,11 @@ async function seed() {
   // const categories = await Promise.all(
   //   Array.from({ length: 7 }).map(() => {
   //     let name = faker.commerce.department();
-      
+
   //     while (categoryNames.has(name)) {
   //       name = faker.commerce.department();
   //     }
-      
+
   //     categoryNames.add(name);
 
   //     return prisma.category.create({
@@ -30,11 +29,11 @@ async function seed() {
   // const products = await Promise.all(
   //   Array.from({ length: 50 }).map(() => {
   //     let name = faker.commerce.productName();
-      
+
   //     while (productNames.has(name)) {
   //       name = faker.commerce.productName();
   //     }
-      
+
   //     productNames.add(name);
 
   //     return prisma.product.create({
@@ -60,12 +59,12 @@ async function seed() {
   // const customers = await Promise.all(
   //   Array.from({ length: 20 }).map(() => {
   //     let name = faker.person.fullName();
-      
+
   //     // Ensure the name is unique
   //     while (customerNames.has(name)) {
   //       name = faker.person.fullName();
   //     }
-      
+
   //     customerNames.add(name);
 
   //     return prisma.customer.create({
@@ -114,12 +113,12 @@ async function seed() {
   // const users = await Promise.all(
   //   Array.from({ length: 10 }).map(() => {
   //     let name = faker.person.fullName();
-      
+
   //     // Ensure the name is unique
   //     while (userNames.has(name)) {
   //       name = faker.person.fullName();
   //     }
-      
+
   //     userNames.add(name);
 
   //     return prisma.users.create({
@@ -135,21 +134,32 @@ async function seed() {
 
   // create user
   const user: { name: string; email: string; password: string; role: Role } = {
-    name: 'Hasan Ragab',
-    email: 'hr145310@gmail.com',
-    password: await hash('hasan2003', 10),
-    role: 'ADMIN',
-  }
+    name: "Hasan Ragab",
+    email: "hr145310@gmail.com",
+    password: await hash("hasan2003", 10),
+    role: "ADMIN",
+  };
+
+  const ali: { name: string; email: string; password: string; role: Role } = {
+    name: "Ali Hasan",
+    email: "ali@gmail.com",
+    password: await hash("ali2003", 10),
+    role: "CASHIER",
+  };
 
   await prisma.users.create({
     data: user,
   });
 
-  console.log('Seeding completed.');
+  await prisma.users.create({
+    data: ali,
+  });
+
+  console.log("Seeding completed.");
 }
 
 seed()
-  .catch(e => {
+  .catch((e) => {
     console.error(e);
   })
   .finally(async () => {

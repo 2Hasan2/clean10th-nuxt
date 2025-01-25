@@ -126,10 +126,7 @@ const items = (row: any) => {
       class="flex justify-between px-3 py-3.5 border-b border-gray-200 dark:border-gray-700"
     >
       <UInput v-model="name" placeholder="Filter products by name..." />
-      <UButton
-        to="/warehouse/products/create"
-        v-if="$user.value?.role === 'ADMIN'"
-      >
+      <UButton to="/warehouse/products/create" v-if="$user?.role === 'ADMIN'">
         <template #leading>
           <UIcon name="lucide:package-plus" class="w-5 h-5" />
         </template>
