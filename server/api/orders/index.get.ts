@@ -13,7 +13,11 @@ export default defineEventHandler(async (event) => {
       startDate,
       endDate,
     } = getQuery(event);
-    
+    const start = new Date(startDate as string);
+    start.setUTCHours(0, 0, 0, 0);
+
+    const end = new Date(endDate as string);
+    end.setUTCHours(23, 59, 59, 999);
 
     const where: any = {
       ...(customerName && {
@@ -34,13 +38,14 @@ export default defineEventHandler(async (event) => {
           lte: parseFloat(maxTotal as string),
         },
       }),
-      ...(startDate && endDate && {
+      ...(startDate &&
+        endDate && {
           createdAt: {
-            gte: startDate,
-            lte: endDate
+            gte: start,
+            lte: end,
           },
         }),
-        deletedAt: null,
+      deletedAt: null,
     };
 
     const skip = (parseInt(page as string) - 1) * parseInt(limit as string);

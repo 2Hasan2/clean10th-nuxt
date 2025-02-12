@@ -15,8 +15,7 @@ export default defineEventHandler(async (event) => {
       where: { id },
       include: {
         products: true,
-        parent: true,
-      }
+      },
     });
 
     if (!category) {

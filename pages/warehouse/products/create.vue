@@ -12,6 +12,7 @@ import { object, string, number, type InferType } from "yup";
 import type { FormSubmitEvent } from "#ui/types";
 import debounce from "lodash/debounce";
 import { ref, watch } from "vue";
+import { generateUPC } from "~/utils/UPC";
 
 // Define validation schema
 const schema = object({
@@ -26,7 +27,7 @@ type Schema = InferType<typeof schema>;
 
 const state = reactive({
   name: "",
-  upc: "",
+  upc: generateUPC(),
   description: "",
   categoryId: "",
   price: 0,
@@ -83,7 +84,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     state.name = "";
     state.description = "";
     state.price = 0;
-    state.upc = "";
+    state.upc = generateUPC();
     selectedCategory.value = {
       label: "",
       value: "",

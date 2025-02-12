@@ -187,10 +187,24 @@ function isRangeSelected(duration: Duration & { start?: Date }) {
 }
 
 function selectRange(duration: Duration & { start?: Date }) {
-  rangeDate.value = {
-    start: sub(duration.start || new Date(), duration),
-    end: duration.start ? add(duration.start, duration) : new Date(),
-  };
+  const start = duration.start ?? new Date();
+  const end =
+    duration.start && "years" in duration
+      ? new Date(start.getFullYear(), 11, 31, 23, 59, 59)
+      : duration.start && "months" in duration
+      ? new Date(start.getFullYear(), start.getMonth() + 1, 0, 23, 59, 59)
+      : duration.start && "days" in duration
+      ? new Date(
+          start.getFullYear(),
+          start.getMonth(),
+          start.getDate() + 6,
+          23,
+          59,
+          59
+        )
+      : new Date();
+
+  rangeDate.value = { start, end };
 }
 </script>
 

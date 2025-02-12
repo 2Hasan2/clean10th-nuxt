@@ -29,16 +29,12 @@ export default defineEventHandler(async (event) => {
     const skip = (parseInt(page as string) - 1) * parseInt(limit as string);
     const take = parseInt(limit as string);
 
-    // Fetch categories with pagination and optional filters
     const categories = await prisma.category.findMany({
       where,
       skip,
       take,
       orderBy: {
         [sortBy as string]: sortOrder === "asc" ? "asc" : "desc",
-      },
-      include: {
-        children: true, // Include children categories
       },
     });
 
@@ -55,6 +51,9 @@ export default defineEventHandler(async (event) => {
     };
   } catch (error) {
     console.error(error);
-    throw createError({ statusCode: 500, message: "Error fetching categories" });
+    throw createError({
+      statusCode: 500,
+      message: "Error fetching categories",
+    });
   }
 });

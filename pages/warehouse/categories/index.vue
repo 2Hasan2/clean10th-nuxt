@@ -16,15 +16,6 @@ const columns = [
     label: "Name",
     sortable: true,
   },
-  {
-    key: "description",
-    label: "Description",
-    sortable: true,
-  },
-  // {
-  //   key: 'actions',
-  //   label: 'Actions',
-  // },
 ];
 const { $user } = useNuxtApp();
 

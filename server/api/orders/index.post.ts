@@ -74,7 +74,7 @@ export default defineEventHandler(async (event) => {
       }
 
       const itemPrice = product.price;
-      total += itemPrice;
+      total += itemPrice * quantity;
 
       orderItems.push({
         productId,
